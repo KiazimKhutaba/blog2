@@ -3,20 +3,35 @@
 namespace MyBlog\Core\Routing;
 
 
-class MatchedRoute extends Route
+class MatchedRoute
 {
     public array $routeParams = [];
 
 
-    public function __construct(Route $route, array $params)
+    public function __construct
+    (
+        public readonly string $name,
+        public readonly string $url,
+        public readonly array $handler,
+        public readonly array $methods,
+        public readonly array $middlewares,
+        public readonly array $params,
+        public string $originalUrl,
+    )
     {
-        $this->url = $route->url;
-        $this->name = $route->name;
-        $this->handler = $route->handler;
-        $this->methods = $route->methods;
-        $this->routeParams = $params;
+
     }
 
+
+    public static function from(Route $route, array $route_params = [])
+    {
+
+    }
+
+    public function hasMiddlewares(): bool
+    {
+        return count($this->middlewares) > 0;
+    }
 
     public function hasParams(): bool
     {

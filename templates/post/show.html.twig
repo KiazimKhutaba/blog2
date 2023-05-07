@@ -4,23 +4,149 @@
     Статья: {{ post.title }}
 {% endblock %}
 
+{% block style %}
+    <style>
+        .comments {
+            font-size: .9rem;
+        }
+    </style>
+{% endblock %}
+
 
 {% block content %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">Главная</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Статья</li>
-    </ol>
-</nav>
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Главная</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Статья</li>
+            </ol>
+        </nav>
 
-{% if is_admin() %}
-    <a class="btn btn-sm btn-success my-3" href="/post/{{ post.id }}/edit">Редактировать</a>
-    <a class="btn btn-sm btn-danger my-3" href="/post/{{ post.id }}/remove" onclick="return confirmDelete({{ post.id }})">Удалить</a>
-{% endif %}
+        {% if is_admin() %}
+            <a class="btn btn-sm btn-success my-3" href="/post/{{ post.id }}/edit">Редактировать</a>
+            <a class="btn btn-sm btn-danger my-3" href="/post/{{ post.id }}/remove" onclick="return confirmDelete({{ post.id }})">Удалить</a>
+        {% endif %}
 
-<h2 class="mb-4">{{ post.title }}</h2>
+        <h2 class="mb-4">{{ post.title }}</h2>
 
-<div class="overflow-x-auto">{{ post.content | raw }}</div>
+        <div class="overflow-x-auto">{{ post.content | raw }}</div>
+    </div>
+
+    <div class="comments my-4">
+
+        <h4 class="mb-3">Comments</h4>
+
+        <div class="comment-form mb-5">
+            {#<div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Email</label>
+                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
+            </div>#}
+            <div class="mb-3">
+                <label for="commentContent" class="form-label d-none">Content</label>
+                <textarea class="form-control" id="commentContent" rows="3" placeholder="Leave comment..."></textarea>
+            </div>
+
+            <div class="mb-3">
+                <input type="submit" class="btn btn-sm btn-warning" value="Comment!" name="commentSubmit" />
+            </div>
+        </div>
+
+        <div class="card mb-3 comment">
+            <div class="card-header d-flex justify-content-between">
+                <span class="">Kiazim Khutaba</span>
+                <span>21.01.2023 18:12</span>
+            </div>
+            <div class="card-body">
+               This is my comment that a left here for testing purposes
+            </div>
+            <div class="card-footer">
+                <span>Answers</span>
+            </div>
+        </div>
+
+        <div class="card mb-3 ms-5 comment">
+            <div class="card-header">
+                <span class="">Kiazim Khutaba</span>
+                <span>21.01.2023 18:12</span>
+            </div>
+            <div class="card-body">
+                This document describes common interfaces for HTTP server request handlers ("request handlers") and HTTP server
+                middleware components ("middleware") that use HTTP messages as described by PSR-7 or subsequent replacement PSRs.
+                HTTP request handlers are a fundamental part of any web application. Server-side code receives a request message, processes it,
+                and produces a response message. HTTP middleware is a way to move common request and response processing away from the application layer.
+                The interfaces described in this document are abstractions for request handlers and middleware. Note: All references to "request handlers"
+                and "middleware" are specific to server request processing. The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+                "SHOULD NOT",
+                "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in RFC 2119.
+            </div>
+        </div>
+
+        <div class="card mb-3 ms-5 comment">
+            <div class="card-header">
+                <span class="">Kiazim Khutaba</span>
+                <span>21.01.2023 18:12</span>
+            </div>
+            <div class="card-body">
+                This is my comment that a left here for testing purposes
+            </div>
+        </div>
+
+
+        <!-- SECOND -->
+        <div class="card mb-3 comment bg-primary">
+            <div class="card-header">
+                <span class="">Kiazim Khutaba</span>
+                <span>21.01.2023 18:12</span>
+            </div>
+            <div class="card-body">
+                This is my comment that a left here for testing purposes
+            </div>
+            <div class="card-footer">
+                <span>Answers</span>
+            </div>
+        </div>
+
+        <div class="card mb-3 ms-5 comment">
+            <div class="card-header">
+                <span class="">Kiazim Khutaba</span>
+                <span>21.01.2023 18:12</span>
+            </div>
+            <div class="card-body">
+                This is my comment that a left here for testing purposes
+            </div>
+        </div>
+
+        <div class="card mb-3 ms-5 comment">
+            <div class="card-header">
+                <span class="">Kiazim Khutaba</span>
+                <span>21.01.2023 18:12</span>
+            </div>
+            <div class="card-body">
+                This is my comment that a left here for testing purposes
+            </div>
+        </div>
+
+        <div class="card mb-3 ms-5 comment">
+            <div class="card-header">
+                <span class="">Kiazim Khutaba</span>
+                <span>21.01.2023 18:12</span>
+            </div>
+            <div class="card-body">
+                This is my comment that a left here for testing purposes
+            </div>
+        </div>
+
+        <div class="card mb-3 ms-5 comment">
+            <div class="card-header">
+                <span class="">Kiazim Khutaba</span>
+                <span>21.01.2023 18:12</span>
+            </div>
+            <div class="card-body">
+                This is my comment that a left here for testing purposes
+            </div>
+        </div>
+
+    </div>
 
 <script>
     function confirmDelete(id) {

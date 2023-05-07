@@ -5,7 +5,6 @@ namespace MyBlog\Core\Routing;
 use MyBlog\Exceptions\ResourceNotFoundException;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
-use function MyBlog\Helpers\map;
 use function MyBlog\Helpers\map_keys;
 
 class Router
@@ -70,21 +69,25 @@ class Router
     /**
      * @throws Exception
      */
-    public function match(Request $request): MatchedRoute
+    public function match(Request $request): Route
     {
-        //exit($request->getPathInfo());
-
-        /** @var Route $route */
-        foreach ($this->routes as $route) 
+        foreach ($this->routes as $route)
         {
-            if (preg_match($route->url, $request->getPathInfo(), $params))
+            if (preg_match($route->url, $request->getPathInfo(), $attrs))
             {
                 if(!in_array($request->getMethod(), $route->methods))
                     throw new Exception("Method '{$request->getMethod()}' not allowed for route '$route->name'");
 
-                array_shift($params);
+                //$matched = clone $route;
 
-                return new MatchedRoute($route, $params);
+                if(count($attrs) > 0)
+                {
+                    // removes first matched element - whole string
+                    array_shift($attrs);
+                    $route->setAttrs($attrs);
+                }
+
+                return $route;
             }
         }
 

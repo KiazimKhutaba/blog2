@@ -10,7 +10,6 @@ use MyBlog\Core\Routing\Route;
 use MyBlog\Core\Routing\Router;
 use MyBlog\Exceptions\ForbiddenException;
 use MyBlog\Exceptions\ResourceNotFoundException;
-use MyBlog\Middlewares\MiddlewareInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Error\LoaderError;
@@ -69,19 +68,36 @@ class Application
     }
 
 
+    /**
+     * @throws \ReflectionException
+     */
+    private function pipeline(Request $request, callable $main, array $middlewares = []): Response
+    {
+        $action = fn(Request $request): Response => $main($request);
+        if(count($middlewares) == 0) return $action($request);
 
+        foreach ($middlewares as $middleware)
+        {
+            $middlewareObj = $this->container->get($middleware);
+            $action = fn(Request $request): Response => $middlewareObj($request, $action);
+        }
+
+        return $action($request);
+    }
+
+
+    /**
+     * @param Request $request
+     * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws \ReflectionException
+     */
     public function process(Request $request): Response
     {
         try {
-
-            $action = fn(Request $request): Response => $this->handle($request);
-
-            foreach ($this->middlewares as $middleware) {
-                $middlewareObj = $this->container->get($middleware);
-                $action = fn(Request $request): Response => $middlewareObj($request, $action);
-            }
-
-            $response = $action($request);
+            $response = $this->pipeline($request, [$this, 'handle'], $this->middlewares);
         }
         catch (\Throwable|\Error $e)
         {
@@ -103,10 +119,6 @@ class Application
     }
 
     /**
-     * @throws SyntaxError
-     * @throws \ReflectionException
-     * @throws RuntimeError
-     * @throws LoaderError
      */
     public function appExceptionHandler(\Throwable $e): void
     {
@@ -114,15 +126,9 @@ class Application
     }
 
 
-    /**
-     * @throws Exception
-     */
-    public function handle(Request $request): Response
+    private function executeControllerAction(Request $request, Route $route): Response
     {
-
-        $matchedRoute = $this->container->get(Router::class)->match($request);
-        [$controller, $method] = $matchedRoute->handler;
-
+        [$controller, $method] = $route->handler;
 
         /** @var BaseController $obj */
         $obj = $this->container->get($controller); // magic happens here :)
@@ -130,9 +136,24 @@ class Application
 
         //$methodRef = new \ReflectionMethod($obj, $method);
 
-        $response = call_user_func_array([$obj, $method], [$request, ...$matchedRoute->routeParams]);
+        $response = call_user_func_array([$obj, $method], [$request, ...$route->getAttrs()]);
 
         return $response instanceof Response ? $response : new Response($response);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function handle(Request $request): Response
+    {
+        /** @var Route $matchedRoute */
+        $matchedRoute = $this->container->get(Router::class)->match($request);
+
+        return $this->pipeline(
+            $request,
+            fn(Request $request) => $this->executeControllerAction($request, $matchedRoute),
+            $matchedRoute->middlewares
+        );
     }
 
 

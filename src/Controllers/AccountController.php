@@ -52,8 +52,8 @@ class AccountController extends BaseController
     public function registration(Request $request): string|Response
     {
         // Todo: to middleware
-        if($this->isUserLogged())
-            return $this->redirectToRoute('account.index');
+        /*if($this->isUserLogged())
+            return $this->redirectToRoute('account.index');*/
 
         $vm = new RegistrationViewModel();
 
@@ -109,8 +109,8 @@ class AccountController extends BaseController
     public function login(Request $request): string|Response
     {
         // Todo: should be moved to middleware
-        if($this->isUserLogged())
-            return $this->redirectToRoute('account.index');
+        /*if($this->isUserLogged())
+            return $this->redirectToRoute('account.index');*/
 
 
         $vm = new LoginViewModel();

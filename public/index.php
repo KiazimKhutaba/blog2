@@ -2,7 +2,7 @@
 
 use MyBlog\Application;
 use MyBlog\Middlewares\AppVersion;
-use MyBlog\Middlewares\CheckAuth;
+use MyBlog\Middlewares\IsAdmin;
 use MyBlog\Middlewares\ExecutionTime;
 use Dotenv\Dotenv;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +19,7 @@ $app = new Application();
 $request = Request::createFromGlobals();
 
 $app->add([
-    CheckAuth::class,
+    //CheckAuth::class,
     AppVersion::class,
     ExecutionTime::class
 ]);

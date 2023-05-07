@@ -9,7 +9,7 @@ use MyBlog\Exceptions\ForbiddenException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class CheckAuth implements MiddlewareInterface
+class IsAdmin implements MiddlewareInterface
 {
     use DebugPrintTrait;
 
@@ -28,7 +28,7 @@ class CheckAuth implements MiddlewareInterface
      */
     public function __invoke(Request $request, \Closure $next): Response
     {
-        $matchedRoute = $this->router->match($request);
+        /*$matchedRoute = $this->router->match($request);
 
         $protected_route_names = [
             // post
@@ -38,13 +38,12 @@ class CheckAuth implements MiddlewareInterface
 
             // account
             //'account.index'
-        ];
+        ];*/
 
 
         $is_admin = $this->session->get('role') === 'admin';
 
-        if(in_array($matchedRoute->name, $protected_route_names) && !$is_admin) {
-            //return new Response('Forbidden', 401);
+        if(!$is_admin) {
             throw new ForbiddenException();
         }
 

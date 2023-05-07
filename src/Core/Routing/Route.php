@@ -7,25 +7,23 @@ use MyBlog\Middlewares\MiddlewareInterface;
 
 class Route
 {
-    public string $name;
-    public string $url;
-    public array $handler; // обработчик - метод класса
-    public array $methods = [];
-    // for middleware
-    public array $middlewares  = [];
-    public array $params = [];
     private string $originalUrl;
+    private array $attrs; // contains matched route param values
 
 
-    public function __construct(string $url, array $handler, array $methods, string $name, array $params = [])
+    public function __construct
+    (
+        public string $url,
+        public array $handler,
+        public array $methods,
+        public string $name,
+        public array $params = [],
+        public array $middlewares = []
+    )
     {
-        $this->name = $name;
-        $this->url = $url;
         $this->originalUrl = substr($url, 0);
-        $this->handler = $handler;
-        $this->methods = $methods;
-        $this->params = $params;
     }
+
 
 
     /**
@@ -38,10 +36,6 @@ class Route
         return $this;
     }
 
-    public function __toString()
-    {
-        return json_encode($this, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-    }
 
     /**
      * @return string
@@ -51,9 +45,24 @@ class Route
         return $this->originalUrl;
     }
 
-
-    public static function middleware2()
+    public function __toString()
     {
+        return json_encode($this, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    }
 
+    /**
+     * @return array
+     */
+    public function getAttrs(): array
+    {
+        return $this->attrs;
+    }
+
+    /**
+     * @param array $attrs
+     */
+    public function setAttrs(array $attrs): void
+    {
+        $this->attrs = $attrs;
     }
 }

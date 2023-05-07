@@ -44,15 +44,6 @@ class BaseController
     }
 
 
-    /*protected function render2(string $template, array $vars = []): string
-    {
-        $vars = Utils::sanitize_html($vars);
-        ob_start();
-        extract($vars);
-        include sprintf("/home/templates/%s.phtml", $template);
-        return ob_get_clean();
-    }*/
-
     public function redirect(string $location): RedirectResponse
     {
         return new RedirectResponse($location);
