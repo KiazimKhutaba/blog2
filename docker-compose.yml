@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+
+  app:
+    container_name: blog-php
+    build:
+      context: ./docker/php
+    ports:
+      - "8080:8080"
+    working_dir: /home
+    links:
+      - db
+    volumes:
+      - ./:/home
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+      - ./docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+      - ./docker/php/conf.d/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
+    command: "php -S 0.0.0.0:8080 -t public"
+    networks:
+      - app_network
+
+  db:
+    # hostname: docker-mysql
+    container_name: blog-db
+    image: mysql:8
+    # user: '1000:1000'
+    ports:
+      - "3306:3306"
+    volumes:
+      # - ./docker/mysql/init:/docker-entrypoint-initdb.d/:ro
+      - ./docker/mysql/lib:/var/lib/mysql
+      - ./docker/mysql/conf.d:/etc/mysql/conf.d
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_ROOT_HOST: '%'
+    networks:
+      - app_network
+
+networks:
+  app_network:

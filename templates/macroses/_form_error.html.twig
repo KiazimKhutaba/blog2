@@ -1,0 +1,18 @@
+{% macro form_errors(obj) %}
+
+{% if obj.message %}
+    <div class="alert alert-info">
+        {{ obj.message }}
+    </div>
+{% endif %}
+{% if obj.errors %}
+    <div class="alert alert-danger py-2 ps-3" style="font-size: .98rem;text-align: left;line-height: 1.8rem">
+        <ul class="mb-0" style="list-style: none; padding-left: 0">
+            {% for error in obj.errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+{% endmacro %}

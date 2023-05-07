@@ -1,0 +1,50 @@
+{% extends "layout.html.twig" %}
+
+{% from 'macroses/_form_error.html.twig' import form_errors %}
+
+{% block title %}
+    New account
+{% endblock %}
+
+{% block style %}
+<style>
+    .reg-form {
+        width: 400px;
+    }
+</style>
+{% endblock %}
+
+
+
+{% block content %}
+
+<div class="reg-form text-center mx-auto mt-4">
+    <h3 class="mb-4">New account</h3>
+
+    {{ form_errors(req) }}
+
+    <form action="{{ route('account.create') }}" method="post">
+
+        <div class="my-3">
+            <label for="email_input" class="form-label d-none">Email</label>
+            <input type="email" class="form-control" id="email_input" placeholder="Enter your email" name="email" value="test@test.loc">
+        </div>
+
+        <div class="mb-3 mt-4">
+            <label for="password_input" class="form-label d-none">Password</label>
+            <input type="password" class="form-control" id="password_input" placeholder="Enter your password" name="password" value="12345">
+        </div>
+
+        <div class="mb-3 mt-4">
+            <label for="password_input" class="form-label d-none">Repeat password</label>
+            <input type="password" class="form-control" id="password_input" placeholder="Repeat your password" name="password_repeat" value="12345">
+        </div>
+
+        <div class="mb-3 mt-4">
+            <input type="submit" class="btn btn-warning w-100" name="accountCreateSubmit" value="Create" />
+        </div>
+    </form>
+
+</div>
+
+{% endblock %}

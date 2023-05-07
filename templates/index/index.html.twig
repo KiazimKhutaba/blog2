@@ -1,0 +1,47 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}
+    Последние статьи
+{% endblock %}
+
+{% block style %}
+    <style>
+        .card\:hover:hover {
+            background: var(--bs-primary);
+            color: white;
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    <h2 class="mt-2 mb-4">Последние статьи</h2>
+
+    {% if is_admin() %}
+    <a class="btn btn-sm btn-warning mt-3 mb-4" href="/post">Добавить новость</a>
+    {% endif %}
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for post in posts %}
+            <div class="col">
+                <a href="/post/{{ post.id }}">
+                    <div class="card h-100 card:hover" title="Click to open post">
+                        <!--<img src="..." class="card-img-top" alt="...">-->
+                        <div class="card-body">
+                            <h5 class="card-title">{{ post.title }}</h5>
+                            <p class="card-text">{{ post.content }}</p>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted">{{ post.created_at }}</small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+
+    <p class="text-secondary">{{ app.time_consumed }}</p>
+
+    {% include 'parts/_pagination.html.twig' %}
+{% endblock %}
+

@@ -1,0 +1,43 @@
+{% extends "layout.html.twig" %}
+
+{% from 'macroses/_form_error.html.twig' import form_errors %}
+
+{% block title %}
+    Login
+{% endblock %}
+
+{% block style %}
+<style>
+    .login-form {
+        width: 400px;
+    }
+</style>
+{% endblock %}
+
+
+
+{% block content %}
+
+<div class="login-form text-center mx-auto mt-4">
+    <h3 class="mb-4">Login</h3>
+
+    {{ form_errors(req) }}
+
+    <form action="{{ route('account.login') }}" method="post">
+        <div class="my-3">
+            <label for="email_input" class="form-label d-none">Example label</label>
+            <input type="email" class="form-control" id="email_input" placeholder="Enter your email" name="email">
+        </div>
+        <div class="mb-3 mt-4">
+            <label for="password_input" class="form-label d-none">Another label</label>
+            <input type="password" class="form-control" id="password_input" placeholder="Enter your password" name="password">
+        </div>
+
+        <div class="mb-3 mt-4">
+            <input type="submit" class="btn btn-warning w-100" value="Go" name="accountLoginSubmit" />
+        </div>
+    </form>
+
+</div>
+
+{% endblock %}

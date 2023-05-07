@@ -1,0 +1,30 @@
+{
+    "name": "kiazimkhutaba/blog",
+    "description": "Simple blog system",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "MyBlog\\": "src/",
+            "MyBlog\\Plugins\\Commentor\\": "src/Plugins/Commentor/src"
+        },
+        "files": [
+            "src/functions.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Kiazim Khutaba"
+        }
+    ],
+    "require": {
+        "twig/twig": "^3.5",
+        "ext-pdo": "*",
+        "vlucas/phpdotenv": "^5.5",
+        "psr/http-server-middleware": "^1.0",
+        "symfony/http-foundation": "^6.2"
+    },
+    "require-dev": {
+        "robmorgan/phinx": "^0.13.4"
+    }
+}

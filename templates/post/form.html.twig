@@ -1,0 +1,76 @@
+{% extends "layout.html.twig" %}
+
+{% from 'macroses/_form_error.html.twig' import form_errors %}
+
+{% block title %}
+    Пост: {{ post.title }}
+{% endblock %}
+
+
+{% block content %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Главная</a></li>
+            {% if post.is_edit %}
+                <li class="breadcrumb-item"><a href="/post/{{ post.id }}">Статья</a></li>
+            {% endif %}
+            {% if post.is_edit %}
+                <li class="breadcrumb-item active" aria-current="page">Редактирование статьи</li>
+            {% else %}
+                <li class="breadcrumb-item active" aria-current="page">Добавить статью</li>
+            {% endif %}
+        </ol>
+    </nav>
+
+    {% if post.is_edit %}
+        <form action="/post/{{ post.id }}/edit" method="post">
+    {% else %}
+        <form action="/post" method="post">
+    {% endif %}
+
+    {% if post.is_edit %}
+        <h3 class="pb-3">Редактирование</h3>
+    {% else %}
+        <h3 class="pb-3">Новая статья</h3>
+    {% endif %}
+
+    {{ form_errors(post) }}
+
+    <div class="mb-3">
+        <label for="newsTitle" class="form-label">Заголовок</label>
+        <input type="text" class="form-control" id="newsTitle" name="title"
+               value="{{ post.title }}" placeholder="Type title here">
+    </div>
+    <div class="mb-3">
+        <label for="formatted_input" class="form-label">Текст</label>
+
+        <div id="formatted_input" contenteditable style="border:solid 1px gray;padding:1em;width:100%;min-height:2em;">
+            {{ post.content | raw }}
+        </div>
+
+        <input type="hidden" name="content" value="" id="formatted_input_value"/>
+        {# <textarea class="form-control" id="newsText" rows="10" name="content"
+                      placeholder="Type text here">{{ post.content }}</textarea> #}
+    </div>
+    <div class="mb-3">
+        {% if post.is_edit %}
+            <input type="submit" value="Обновить" class="btn btn-success" name="postSubmit"/>
+        {% else %}
+            <input type="submit" value="Добавить" class="btn btn-success" name="postSubmit"/>
+        {% endif %}
+    </div>
+    </form>
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const editor = document.querySelector('#formatted_input');
+            const post_content = document.querySelector('#formatted_input_value');
+
+
+            editor.addEventListener('input', () => {
+                post_content.value = editor.innerHTML.trim();
+            });
+        });
+    </script>
+{% endblock %}

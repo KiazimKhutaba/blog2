@@ -1,0 +1,33 @@
+[req]
+default_bits = 2048
+default_keyfile =
+encrypt_key = no
+utf8 = yes
+distinguished_name = req_distinguished_name
+x509_extensions = v3_req
+prompt = no
+
+[req_distinguished_name]
+C = US
+ST = Delawer
+L = Delawer
+O  = DApp LLC
+OU = IT
+CN = dapp.local
+
+[v3_req]
+keyUsage = critical, digitalSignature, keyAgreement
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1  = dapp.local
+DNS.2  = q3.dapp.local
+DNS.3  = q3-backend.dapp.local
+DNS.4  = q3-api.dapp.local
+DNS.5  = q3-eu.dapp.local
+DNS.6  = q3-eu-backend.dapp.local
+DNS.7  = q3-eu-api.dapp.local
+DNS.8  = q3-uk.dapp.local
+DNS.9  = q3-uk-backend.dapp.local
+DNS.10 = q3-uk-api.dapp.local

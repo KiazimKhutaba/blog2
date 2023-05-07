@@ -1,0 +1,13 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}
+    Server error
+{% endblock %}
+
+
+{% block content %}
+    <h3>Server error: {{ e.message }}</h3>
+    <pre>{{ trace }}</pre>
+{% endblock %}
+
+

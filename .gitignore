@@ -1,0 +1,8 @@
+.idea
+dapp
+docker/mysql/lib/*
+!docker/mysql/lib/.gitkeep
+docker/nginx/logs/*
+files/cache/templates/*
+vendor/
+docker-compose_old.yml
