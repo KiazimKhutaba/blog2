@@ -77,4 +77,24 @@ class MySQLDatabase implements DatabaseInterface
     {
         // TODO: Implement delete() method.
     }
+
+    public function query(string $sql, array $params, \Closure $convertor = null, int $fetchMode = \PDO::FETCH_ASSOC)
+    {
+        // TODO: Implement query() method.
+    }
+
+    public function queryOne(string $sql, array $params, \Closure $convertor = null, int $fetchMode = \PDO::FETCH_ASSOC)
+    {
+        // TODO: Implement queryOne() method.
+    }
+
+    public function get($id)
+    {
+        // TODO: Implement get() method.
+    }
+
+    public function insert($data)
+    {
+        // TODO: Implement insert() method.
+    }
 }
