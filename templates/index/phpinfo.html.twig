@@ -1,0 +1,14 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}
+    phpinfo
+{% endblock %}
+
+
+{% block content %}
+
+    {{ info | raw }}
+
+    <p class="text-secondary">{{ app.time_consumed }}</p>
+{% endblock %}
+

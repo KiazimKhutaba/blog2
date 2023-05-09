@@ -58,6 +58,14 @@ return function (Container $container): Container {
             return $session->get('role') === 'admin';
         }));
 
+
+        $twig->addFunction(new TwigFunction('is_authorized', function (int $object_author_id) use ($container) {
+            /** @var SessionInterface $session */
+            $session = $container->get(SessionInterface::class);
+            $user_id = $session->get('user_id');
+            return $session->get('role') === 'admin' || ($user_id === $object_author_id);
+        }));
+
         return $twig;
     });
 

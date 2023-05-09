@@ -25,7 +25,7 @@ class Container
     /**
      * @throws ReflectionException
      */
-    public function get(string $id): mixed
+    public function get(string $id, array $params = []): mixed
     {
         return isset($this->services[$id]) ? $this->services[$id]() : $this->prepareObject($id);
     }

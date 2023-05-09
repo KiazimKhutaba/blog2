@@ -9,5 +9,5 @@ class Config
     //const PATH_TO_SQLITE_FILE = '/home/src/files/app.db';
 
     // for docker
-    const PATH_TO_SQLITE_FILE = '/home/files/app.db';
+    const PATH_TO_SQLITE_FILE = '/home/files/app.db.sqlite3';
 }

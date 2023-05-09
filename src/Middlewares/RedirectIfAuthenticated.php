@@ -1,6 +1,6 @@
 <?php
 
-namespace Middlewares;
+namespace MyBlog\Middlewares;
 
 use MyBlog\Core\Routing\Router;
 use MyBlog\Core\Session\SessionInterface;
@@ -25,6 +25,7 @@ class RedirectIfAuthenticated implements MiddlewareInterface
      */
     public function __invoke(Request $request, \Closure $next): Response
     {
+
         if($this->userIsLogged()) {
             return $this->redirectToRoute('account.index');
         }

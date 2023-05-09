@@ -3,8 +3,6 @@
 namespace MyBlog\Core\Routing;
 
 
-use MyBlog\Middlewares\MiddlewareInterface;
-
 class Route
 {
     private string $originalUrl;

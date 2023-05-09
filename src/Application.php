@@ -8,8 +8,10 @@ use MyBlog\Controllers\HttpErrorController;
 use MyBlog\Core\Container;
 use MyBlog\Core\Routing\Route;
 use MyBlog\Core\Routing\Router;
+use MyBlog\Core\Traits\ToJsonStringTrait;
 use MyBlog\Exceptions\ForbiddenException;
 use MyBlog\Exceptions\ResourceNotFoundException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Error\LoaderError;
@@ -115,6 +117,9 @@ class Application
             }
         }
 
+        if($request->isXmlHttpRequest())
+            return new JsonResponse($response->getContent(), $response->getStatusCode(), [], true);
+
         return $response;
     }
 
@@ -132,14 +137,19 @@ class Application
 
         /** @var BaseController $obj */
         $obj = $this->container->get($controller); // magic happens here :)
-        $obj->setContainer($this->container);
+
+        if(method_exists($obj, 'setContainer'))
+            $obj->setContainer($this->container);
 
         //$methodRef = new \ReflectionMethod($obj, $method);
 
         $response = call_user_func_array([$obj, $method], [$request, ...$route->getAttrs()]);
 
+        //return $response;
         return $response instanceof Response ? $response : new Response($response);
     }
+
+    use ToJsonStringTrait;
 
     /**
      * @throws Exception
@@ -148,6 +158,7 @@ class Application
     {
         /** @var Route $matchedRoute */
         $matchedRoute = $this->container->get(Router::class)->match($request);
+
 
         return $this->pipeline(
             $request,

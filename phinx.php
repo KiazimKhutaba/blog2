@@ -8,7 +8,7 @@ return
     ],
     'environments' => [
         'default_migration_table' => 'phinxlog',
-        'default_environment' => env('APP_ENV', 'dev'),
+        'default_environment' => env('PHINX_ENV', 'development'),
         'production' => [
             'adapter' => 'mysql',
             'host' => 'localhost',
@@ -19,12 +19,12 @@ return
             'charset' => 'utf8',
         ],
         'development' => [
-            'adapter' => 'mysql',
-            'host' => 'localhost',
-            'name' => 'development_db',
-            'user' => 'root',
+            'adapter' => 'sqlite',
+            'host' => '',
+            'name' => 'files/app.db',
+            'user' => '',
             'pass' => '',
-            'port' => '3306',
+            'port' => '',
             'charset' => 'utf8',
         ],
         'testing' => [

@@ -20,6 +20,11 @@ class PostViewModel
     {
     }
 
+    public function getViewName(): string
+    {
+        return 'post/show.html.twig';
+    }
+
     public function toArray(): array
     {
         return array_merge([

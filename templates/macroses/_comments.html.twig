@@ -1,0 +1,50 @@
+{% macro comments(comments, post_id) %}
+
+<div class="comments my-4" data-post-id="{{ post_id }}">
+
+    <h4 class="mb-3">Comments</h4>
+
+    <!-- Comment Form -->
+    <form action="/comment" method="post" id="commentAddTopForm">
+        <div class="comment-form mb-5">
+            <div class="mb-3">
+                <label for="commentContent" class="form-label d-none">Content</label>
+                <textarea class="form-control" id="commentContent" rows="3" placeholder="Leave comment..." name="content"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <input type="submit" class="btn btn-sm btn-warning" value="Comment!" name="commentSubmit" />
+            </div>
+        </div>
+
+        <input type="hidden" name="post_id" value="{{ post_id }}" />
+        <input type="hidden" name="parent_id" value="{{ comment.id }}" />
+    </form>
+
+    <!-- List of comments -->
+    {% for comment in comments %}
+    <div class="comment-wrapper" id="#comment_{{ comment.id }}">
+        <div class="card mb-3 comment">
+            <div class="card-header d-flex justify-content-between">
+                <span class="">{{ comment.author }}</span>
+                <span>{{ comment.created_at }}</span>
+            </div>
+            <div class="card-body">
+                {{ comment.content }}
+            </div>
+            <div class="card-footer d-flex justify-content-between">
+                <span>Replies</span>
+                <span>
+                    {% if is_authorized(comment.user_id) %}
+                    <a href="#remove_{{ comment.id }}" class="text-danger"  data-comment-id="{{ comment.id }}" data-action="remove">Remove</a>
+                    {% endif %}
+                    <a href="#reply_{{ comment.id }}" data-comment-id="{{ comment.id }}" data-action="reply">Reply</a>
+                </span>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+
+{% endmacro %}

@@ -23,7 +23,7 @@
     </nav>
 
     {% if post.is_edit %}
-        <form action="/post/{{ post.id }}/edit" method="post">
+        <form action="{{ route('post.edit', {'id': post.id}) }}" method="post">
     {% else %}
         <form action="/post" method="post">
     {% endif %}

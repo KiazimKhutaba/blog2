@@ -4,12 +4,17 @@ namespace MyBlog\Controllers;
 
 
 use Exception;
+use MyBlog\Core\Session\SessionInterface;
 use MyBlog\Core\Traits\ToJsonStringTrait;
 use MyBlog\Core\Validator\Validator;
+use MyBlog\Dtos\NewCommentRequestDto;
 use MyBlog\Dtos\PostRequestDto;
 use MyBlog\Exceptions\ResourceNotFoundException;
+use MyBlog\Repositories\CommentsRepository;
 use MyBlog\Repositories\PostRepository;
+use MyBlog\Repositories\UserRepository;
 use MyBlog\ViewModels\PostViewModel;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +24,10 @@ class PostController extends BaseController
     use ToJsonStringTrait;
 
     public function __construct(
-        private readonly PostRepository $postRepository
+        private readonly PostRepository $postRepository,
+        private readonly CommentsRepository $commentsRepository,
+        private readonly UserRepository $userRepository,
+        private readonly SessionInterface $session
     )
     {
     }
@@ -38,10 +46,10 @@ class PostController extends BaseController
             $errors = Validator::validate($post);
 
             if (0 === count($errors)) {
-                $createdId = $this->postRepository->create($post);
+                $createdId = $this->postRepository->add($post->toArray());
 
                 if(0 !== $createdId) {
-                    return $this->redirect('/post/' . $createdId);
+                    return $this->redirectToRoute('post.show', ['id' => $createdId]);
                 }
                 else {
                     throw new Exception("Unknown exception");
@@ -65,12 +73,25 @@ class PostController extends BaseController
     public function show(Request $request, int $post_id): string
     {
         $post = $this->postRepository->get($post_id);
+        //return $this->toJson($post);
+
+        $comments = $this->commentsRepository->getComments($post_id);
 
         if(!$post)
             throw new ResourceNotFoundException();
 
         $vm = new PostViewModel(post: $post);
-        return $this->render('post/show.html.twig', ['post' => $vm->toArray()]);
+        return $this->render($vm->getViewName(), ['post' => $vm->toArray(), 'comments' => $comments]);
+    }
+
+
+    public function addComment(Request $request, int $post_id): string
+    {
+        $dto = NewCommentRequestDto::from($request->request->all());
+        $user_id = $this->session->get('user_id');
+        $rs = $this->commentsRepository->create($dto, $post_id, $user_id);
+
+        return $this->toJson($rs);
     }
 
 
@@ -82,21 +103,23 @@ class PostController extends BaseController
      */
     public function edit(Request $request, int $id): string|Response
     {
-        if ($request->isMethod(Request::METHOD_POST) && $request->request->has('postSubmit')) {
-
+        if ($request->isMethod(Request::METHOD_POST) && $request->request->has('postSubmit'))
+        {
             $post = PostRequestDto::from($request->request->all());
             $errors = Validator::validate($post);
 
-            if (0 === count($errors)) {
+            if (0 === count($errors))
+            {
                 $postUpdated = $this->postRepository->update($id, $post);
 
                 if($postUpdated) {
-                    return $this->redirect('/post/' . $id);
+                    return $this->redirectToRoute('post.show', ['id' => $id]);
                 }
                 else
                     throw new Exception("Unknown exception");
             }
-            else {
+            else
+            {
                 $postViewModel = new PostViewModel(true, 'Cant update post', $errors, $post->toArray());
                 return $this->render('post/form.html.twig', $postViewModel->toArray());
             }

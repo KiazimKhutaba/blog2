@@ -6,18 +6,18 @@ use MyBlog\Core\Db\DatabaseInterface;
 use MyBlog\Dtos\NewAccountRequestDto;
 use MyBlog\Models\User;
 
-class UserRepository
+class UserRepository extends BaseRepository
 {
     public function __construct
     (
-        private readonly DatabaseInterface $db
+        protected DatabaseInterface $db
     ) 
     {
-        $this->db->table("users");
+        parent::__construct($this->db, 'users');
     }
 
 
-    public function create(NewAccountRequestDto $user)
+   /* public function create(NewAccountRequestDto $user)
     {
         return $this->db->insert($user->toArray());
     }
@@ -27,7 +27,7 @@ class UserRepository
     {
         $result = $this->db->get($id);
         return new User(...$result);
-    }
+    }*/
 
     public function getByEmail(string $email): bool|User
     {

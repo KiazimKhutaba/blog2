@@ -7,7 +7,7 @@ class SQLiteDatabase implements DatabaseInterface
 {
     private \PDO $db;
     private static ?self $instance = null;
-    private string $table;
+    public string $table;
 
 
     private function __construct(string $pathToDb)
@@ -71,64 +71,82 @@ class SQLiteDatabase implements DatabaseInterface
     }
 
 
+    public function queryEx(string $sql, array $params, \Closure $convertor = null, int $fetchMode = \PDO::FETCH_ASSOC): mixed
+    {
+        $statement = $this->db->prepare($sql);
+        $statement->execute($params);
+
+        $rows = $statement->fetchAll($fetchMode);
+
+        if (!$rows || count($rows) === 0) {
+            return false;
+        }
+
+        if($convertor !== null) {
+            return array_map(static fn($row) => $convertor($row), $rows);
+        }
+
+        return $rows;
+    }
+
     public function queryOne(string $sql, array $params, \Closure $convertor = null, int $fetchMode = \PDO::FETCH_ASSOC): mixed
     {
         $statement = $this->db->prepare($sql);
         $statement->execute($params);
 
-        $resultSet = $statement->fetch($fetchMode);
+        $row = $statement->fetch($fetchMode);
 
-        if (!$resultSet || count($resultSet) === 0) {
+        if (!$row || count($row) === 0) {
             return false;
         }
 
-        return $convertor !== null ? $convertor($resultSet): $resultSet;
+        return $convertor !== null ? $convertor($row): $row;
     }
 
 
-    public function get($id)
+    public function get(int|string $id, string $table): array
     {
-        $sql = sprintf("SELECT * FROM %s WHERE id = :id", $this->table);
-        $stmt = $this->db->prepare($sql);
-
-        $stmt->bindParam(":id", $id);
-        $stmt->execute();
-
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
-    }
-
-    public function getAll(int $limit = 3): array
-    {
-        $sql = "SELECT * FROM $this->table LIMIT :limit";
+        $sql = sprintf("SELECT * FROM %s WHERE id = :id", $table);
         $statement = $this->db->prepare($sql);
 
-        //throw  new \Exception($sql);
+        //$statement->bindParam(":id", $id);
+        $statement->execute([
+            ':id' => $id
+        ]);
 
-        //$statement->bindParam(":sort_order", $sort_order);
-        $statement->bindValue(":limit", $limit);
-        $statement->execute();
-
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
+        return $statement->fetch(\PDO::FETCH_ASSOC) ?: [];
     }
 
-    public function insert($data): int
+    public function getAll(int $limit, string $table, \Closure $convertor = null): array
+    {
+        $sql = "SELECT * FROM $table ORDER BY created_at LIMIT 0, :limit";
+        $statement = $this->db->prepare($sql);
+;
+        $statement->execute([':limit' => $limit]);
+        $rows = $statement->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $convertor !== null ? $convertor($rows) : $rows;
+    }
+
+    public function insert(array $data, string $table): int
     {
         $keys = implode(", ", array_keys($data));
         $values = ":" . implode(", :", array_keys($data));
-        $sql = sprintf("INSERT INTO %s (%s) VALUES (%s)", $this->table, $keys, $values);
+        $sql = sprintf("INSERT INTO %s (%s) VALUES (%s)", $table, $keys, $values);
 
         //throw new \Exception($sql);
 
-        $stmt = $this->db->prepare($sql);
+        $statement = $this->db->prepare($sql);
 
         foreach ($data as $key => $value) {
-            $stmt->bindValue(":$key", $value);
+            $statement->bindValue(":$key", $value);
+            //$params[":$key"] = $value;
         }
 
-        return $stmt->execute() ? $this->db->lastInsertId() : 0;
+        return $statement->execute() ? $this->db->lastInsertId() : 0;
     }
 
-    public function update($id, $data): int
+    public function update(int|string $id, array $data, string $table): int
     {
         $set = [];
         foreach ($data as $key => $value) {
@@ -136,24 +154,23 @@ class SQLiteDatabase implements DatabaseInterface
         }
 
         $set = implode(", ", $set);
-        $sql = "UPDATE $this->table SET $set WHERE id = :id";
+        $sql = sprintf("UPDATE %s SET $set WHERE id = :id", $table);
         //throw new \Exception($sql);
 
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(":id", $id);
+        $statement = $this->db->prepare($sql);
+        $statement->bindParam(":id", $id);
 
         foreach ($data as $key => $value) {
-            $stmt->bindValue(":$key", $value);
+            $statement->bindValue(":$key", $value);
         }
 
-        return $stmt->execute();
+        return $statement->execute();
     }
 
-    public function delete($id): bool
+    public function delete(int|string $id, string $table): bool
     {
-        $sql = "DELETE FROM $this->table WHERE id = :id";
-        $stmt = $this->db->prepare($sql);
-        //$stmt->bindParam(":id", $id);
-        return $stmt->execute([':id' => $id]);
+        $sql = sprintf('DELETE FROM %s WHERE id = :id', $table);
+        $statement = $this->db->prepare($sql);
+        return $statement->execute([':id' => $id]);
     }
 }

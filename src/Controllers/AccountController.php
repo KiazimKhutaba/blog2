@@ -87,6 +87,8 @@ class AccountController extends BaseController
                         $this->session->set('user_id', $createdUserId);
                         $this->session->set('role', 'user');
 
+                        //$this->session->set('user', ['id' => $createdUserId, 'role' => 'user']);
+
                         return $this->redirectToRoute('account.index');
                     }
                     else {

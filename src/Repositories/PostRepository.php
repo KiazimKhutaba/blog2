@@ -4,26 +4,22 @@ namespace MyBlog\Repositories;
 
 use MyBlog\Core\Db\DatabaseInterface;
 use MyBlog\Core\Utils;
+use MyBlog\Dtos\NewCommentRequestDto;
 use MyBlog\Dtos\PostRequestDto;
+use MyBlog\Models\Comment;
 use MyBlog\Models\Post;
 
-class PostRepository
+class PostRepository extends BaseRepository
 {
     /**
      * @param DatabaseInterface $db
      */
     public function __construct
     (
-        private readonly DatabaseInterface $db
+        protected DatabaseInterface $db
     )
     {
-        $this->db->table("posts");
-    }
-
-
-    public function create(PostRequestDto $post): int
-    {
-        return $this->db->insert($post->toArray());
+        parent::__construct($db, 'posts');
     }
 
 
@@ -33,28 +29,28 @@ class PostRepository
     }
 
 
-    public function getAll(int $page): array
+    public function getPosts(int $limit): array
     {
-        $sql = "SELECT * FROM posts ORDER BY created_at DESC LIMIT 0, :page";
-        $posts = $this->db->query($sql, [':page' => $page]);
-
-        return array_map(static function (array $post) {
-            $post['created_at'] = Utils::formatDatetime($post['created_at']);
-            $post['content'] = substr($post['content'], 0, 100);
-            return $post;
-        }, $posts);
+        return $this->db->getAll($limit, 'posts', function (array $rows) {
+            return array_map(static function (array $post) {
+                $post['created_at'] = Utils::formatDatetime($post['created_at']);
+                $post['content'] = substr($post['content'], 0, 100);
+                return $post;
+            }, $rows);
+        });
     }
 
 
-    public function get(int $id): array
+
+    public function get2(int|string $id): array
     {
+        //throw new \Exception($this->db->table);
+
         return $this->db->get($id) ?: [];
-    }
-
-
-    public function remove(int $post_id)
-    {
-        return $this->db->delete($post_id);
+        /*$sql = 'SELECT p.*, c.* FROM posts p LEFT JOIN comments c on p.id = c.post_id WHERE p.id = :id';
+        return $this->db->queryOne($sql, [':id' => $id], static function (array $row) {
+            return $row;
+        }) ?: [];*/
     }
 
 

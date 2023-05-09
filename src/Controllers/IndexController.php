@@ -29,8 +29,24 @@ class IndexController extends BaseController
     public function index(Request $request): bool|string
     {
         $limit = $request->query->get('page', 10);
-        $posts = $this->postRepository->getAll($limit);
+        $posts = $this->postRepository->getPosts($limit);
 
         return $this->render('index/index.html.twig', ['posts' => $posts]);
+    }
+
+
+    public function phpinfo(): string
+    {
+        ob_start();
+        phpinfo();
+        $info = ob_get_clean();
+
+        return $this->render('index/phpinfo.html.twig', ['info' => $info]);
+    }
+
+
+    public function debug(Request $request): string
+    {
+        return $this->toJson($request->request->all());
     }
 }
