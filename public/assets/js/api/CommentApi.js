@@ -1,19 +1,12 @@
+import ApiBase from "../ApiBase.js";
 
-export default class CommentApi
+export default class CommentApi extends ApiBase
 {
-    /**
-     *
-     * @param apiBase {ApiBase}
-     */
-    constructor(apiBase) {
-        this.apiBase = apiBase;
-    }
-
     async create(post_id, data) {
-        return await this.apiBase.post(`/post/${post_id}/comment`, {}, data);
+        return await this.post(`/post/${post_id}/comment`, {}, data);
     }
 
     async remove(id) {
-        return await  this.apiBase.delete(`/comment/${id}/remove`)
+        return await  this.delete(`/comment/${id}/remove`)
     }
 }

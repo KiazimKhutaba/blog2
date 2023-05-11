@@ -5,6 +5,7 @@ namespace MyBlog\Repositories;
 use MyBlog\Dtos\NewCommentRequestDto;
 use MyBlog\Models\Comment;
 use MyBlog\Core\Db\DatabaseInterface;
+use function MyBlog\Helpers\buildTree;
 
 class CommentsRepository extends BaseRepository
 {
@@ -24,8 +25,8 @@ class CommentsRepository extends BaseRepository
         $id = $this->db->insert($data, $this->table);
 
         if($id) {
-            // Todo: should return author emails
-            return $this->db->get($id, $this->table);
+            $sql = 'SELECT c.*, u.email as author FROM comments c LEFT JOIN users u on u.id = c.user_id WHERE c.id = :id';
+            return $this->db->queryEx($sql, ['id' => $id])[0];
         }
 
         return [];
@@ -34,7 +35,8 @@ class CommentsRepository extends BaseRepository
     public function getComments(int $post_id)
     {
         $sql = 'SELECT c.*, u.email as author FROM comments c INNER JOIN users u on u.id = c.user_id WHERE post_id = :post_id';
-        return $this->db->query($sql, [':post_id' => $post_id]);
+        $rows = $this->db->query($sql, [':post_id' => $post_id]);
+        return buildTree($rows, child_key: 'id');
     }
 
 

@@ -75,10 +75,10 @@ class PostController extends BaseController
         $post = $this->postRepository->get($post_id);
         //return $this->toJson($post);
 
-        $comments = $this->commentsRepository->getComments($post_id);
-
         if(!$post)
             throw new ResourceNotFoundException();
+
+        $comments = $this->commentsRepository->getComments($post_id);
 
         $vm = new PostViewModel(post: $post);
         return $this->render($vm->getViewName(), ['post' => $vm->toArray(), 'comments' => $comments]);

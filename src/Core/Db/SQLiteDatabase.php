@@ -3,6 +3,8 @@
 namespace MyBlog\Core\Db;
 
 
+use Closure;
+
 class SQLiteDatabase implements DatabaseInterface
 {
     private \PDO $db;
@@ -52,11 +54,11 @@ class SQLiteDatabase implements DatabaseInterface
     /**
      * @param string $sql
      * @param array $params
-     * @param \Closure|null $convertor
+     * @param Closure|null $convertor
      * @param int $fetchMode
      * @return bool|array|object
      */
-    public function query(string $sql, array $params, \Closure $convertor = null, int $fetchMode = \PDO::FETCH_ASSOC): mixed
+    public function query(string $sql, array $params, Closure $convertor = null, int $fetchMode = \PDO::FETCH_ASSOC): mixed
     {
         $statement = $this->db->prepare($sql);
         $statement->execute($params);
@@ -71,7 +73,14 @@ class SQLiteDatabase implements DatabaseInterface
     }
 
 
-    public function queryEx(string $sql, array $params, \Closure $convertor = null, int $fetchMode = \PDO::FETCH_ASSOC): mixed
+    /**
+     * @param string $sql
+     * @param array $params
+     * @param Closure|null $convertor
+     * @param int $fetchMode
+     * @return mixed
+     */
+    public function queryEx(string $sql, array $params, Closure $convertor = null, int $fetchMode = \PDO::FETCH_ASSOC): mixed
     {
         $statement = $this->db->prepare($sql);
         $statement->execute($params);
@@ -89,7 +98,7 @@ class SQLiteDatabase implements DatabaseInterface
         return $rows;
     }
 
-    public function queryOne(string $sql, array $params, \Closure $convertor = null, int $fetchMode = \PDO::FETCH_ASSOC): mixed
+    public function queryOne(string $sql, array $params, Closure $convertor = null, int $fetchMode = \PDO::FETCH_ASSOC): mixed
     {
         $statement = $this->db->prepare($sql);
         $statement->execute($params);
@@ -117,7 +126,7 @@ class SQLiteDatabase implements DatabaseInterface
         return $statement->fetch(\PDO::FETCH_ASSOC) ?: [];
     }
 
-    public function getAll(int $limit, string $table, \Closure $convertor = null): array
+    public function getAll(int $limit, string $table, Closure $convertor = null): array
     {
         $sql = "SELECT * FROM $table ORDER BY created_at LIMIT 0, :limit";
         $statement = $this->db->prepare($sql);

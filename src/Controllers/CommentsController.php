@@ -46,9 +46,9 @@ class CommentsController extends BaseController
         throw new ResourceNotFoundException();
     }
 
-    public function getAll(): string
+    public function getAll(Request $request, int $post_id): string
     {
-        $comments = $this->commentsRepository->getAll();
+        $comments = $this->commentsRepository->getComments($post_id);
         return $this->toJson($comments);
     }
 }

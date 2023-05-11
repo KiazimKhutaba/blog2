@@ -23,7 +23,7 @@
 
     <!-- List of comments -->
     {% for comment in comments %}
-    <div class="comment-wrapper" id="#comment_{{ comment.id }}">
+    <div class="comment-wrapper" id="#comment_{{ comment.id }}" data-comment-id={{ comment.id }} data-parent-id="{{ comment.parent_id }}">
         <div class="card mb-3 comment">
             <div class="card-header d-flex justify-content-between">
                 <span class="">{{ comment.author }}</span>
@@ -38,10 +38,46 @@
                     {% if is_authorized(comment.user_id) %}
                     <a href="#remove_{{ comment.id }}" class="text-danger"  data-comment-id="{{ comment.id }}" data-action="remove">Remove</a>
                     {% endif %}
+
+                    {% if is_logged() %}
                     <a href="#reply_{{ comment.id }}" data-comment-id="{{ comment.id }}" data-action="reply">Reply</a>
+                    {% else %}
+                    <a href="#reply_{{ comment.id }}" onclick="return alert('Please, login to leave comment')">Reply</a>
+                    {% endif %}
                 </span>
             </div>
         </div>
+    </div>
+    <div class="comment-answers">
+    {% if comment.answers %}
+        {% for _comment in comment.answers %}
+        <div class="comment-wrapper ms-4" id="#comment_{{ _comment.id }}" data-comment-id={{ _comment.id }} data-parent-id="{{ _comment.parent_id }}">
+            <div class="card mb-3 comment">
+                <div class="card-header d-flex justify-content-between">
+                    <span class="">{{ _comment.author }}</span>
+                    <span>{{ _comment.created_at }}</span>
+                </div>
+                <div class="card-body">
+                    {{ _comment.content }}
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                    <span>Replies</span>
+                    <span>
+                    {% if is_authorized(_comment.user_id) %}
+                        <a href="#remove_{{ _comment.id }}" class="text-danger"  data-comment-id="{{ _comment.id }}" data-action="remove">Remove</a>
+                    {% endif %}
+
+                        {% if is_logged() %}
+                            <a href="#reply_{{ _comment.id }}" data-comment-id="{{ _comment.id }}" data-action="reply">Reply</a>
+                    {% else %}
+                            <a href="#reply_{{ _comment.id }}" onclick="return alert('Please, login to leave comment')">Reply</a>
+                        {% endif %}
+                </span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
     </div>
     {% endfor %}
 

@@ -29,6 +29,8 @@ return [
         IsAuthenticated::class//, IsAuthorized::class => ['object_author_id']
     ]),
 
+    new Route('/post/{id}/comments', [CommentsController::class, 'getAll'], ['GET'], 'comments.get', ['id' => '[\d]+']),
+
     // Account
     new Route('/login', [AccountController::class, 'login'], ['GET', 'POST'], 'account.login', [], [RedirectIfAuthenticated::class]),
     new Route('/logout', [AccountController::class, 'logout'], ['GET'], 'account.logout'),

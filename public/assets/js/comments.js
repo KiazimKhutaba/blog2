@@ -9,8 +9,7 @@ document.addEventListener('DOMContentLoaded', function ()
     const comments = document.querySelector('.comments');
     const post_id = comments.dataset.postId;
     const actions = Object.freeze({  reply: 'reply', close: 'close', remove: 'remove' });
-    const api = new ApiBase();
-    const commentApi = new CommentApi(api);
+    const commentApi = new CommentApi();
 
 
     commentAddTopForm.addEventListener('submit', async (e) => {
@@ -62,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function ()
                         e.preventDefault();
 
                         const form = new FormData(e.target);
-                        let data = await api.post(`/post/${post_id}/comment`, {}, form);
+                        let data = await commentApi.create(post_id, form);
 
                         if(data) {
                             wrapper.removeChild(wrapper.lastChild);
@@ -88,8 +87,7 @@ document.addEventListener('DOMContentLoaded', function ()
 
                     if(!confirm(`Do you confirm deletion of comment with id ${comment_id} ?`)) return;
 
-                    let response = await commentApi.remove(comment_id);
-                    let result = await response.json();
+                    let result = await commentApi.remove(comment_id);
 
                     if (result === 1) {
                         const commentElement = document.getElementById(`#comment_${comment_id}`);
