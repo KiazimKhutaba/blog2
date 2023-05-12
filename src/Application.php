@@ -131,6 +131,9 @@ class Application
     }
 
 
+    /**
+     * @throws \ReflectionException
+     */
     private function executeControllerAction(Request $request, Route $route): Response
     {
         [$controller, $method] = $route->handler;
@@ -141,9 +144,12 @@ class Application
         if(method_exists($obj, 'setContainer'))
             $obj->setContainer($this->container);
 
-        //$methodRef = new \ReflectionMethod($obj, $method);
+        $methodParams = $this->container->getMethodParams($controller, $method);
+        $attrs = array_merge($methodParams, $route->getAttrs());
 
-        $response = call_user_func_array([$obj, $method], [$request, ...$route->getAttrs()]);
+        //throw new Exception($this->toJson($attrs));
+
+        $response = call_user_func_array([$obj, $method], $attrs);
 
         //return $response;
         return $response instanceof Response ? $response : new Response($response);

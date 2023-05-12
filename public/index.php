@@ -1,5 +1,6 @@
 <?php
 
+
 use MyBlog\Application;
 use MyBlog\Middlewares\AppVersion;
 use MyBlog\Middlewares\IsAdmin;

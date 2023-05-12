@@ -29,7 +29,7 @@ class Router
         {
             foreach ($route->params as $name => $type)
             {
-                $route->url = str_replace("{". $name ."}", "($type)", $route->url);
+                $route->url = str_replace("{". $name ."}", "(?<$name>$type)", $route->url);
             }
         }
 
@@ -84,7 +84,9 @@ class Router
                 {
                     // removes first matched element - whole string
                     array_shift($attrs);
-                    $route->setAttrs($attrs);
+
+                    $attrs_with_removed_int_keys = array_filter($attrs, 'is_string', ARRAY_FILTER_USE_KEY);
+                    $route->setAttrs($attrs_with_removed_int_keys);
                 }
 
                 return $route;

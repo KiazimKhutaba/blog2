@@ -5,6 +5,7 @@
     <h4 class="mb-3">Comments</h4>
 
     <!-- Comment Form -->
+    {% if is_logged() %}
     <form action="/comment" method="post" id="commentAddTopForm">
         <div class="comment-form mb-5">
             <div class="mb-3">
@@ -20,6 +21,9 @@
         <input type="hidden" name="post_id" value="{{ post_id }}" />
         <input type="hidden" name="parent_id" value="{{ comment.id }}" />
     </form>
+    {% else %}
+    <p class="alert alert-warning">Please, <a href="{{ route('account.login') }}">Login</a> to leave comments</p>
+    {% endif %}
 
     <!-- List of comments -->
     {% for comment in comments %}

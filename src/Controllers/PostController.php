@@ -45,7 +45,8 @@ class PostController extends BaseController
             $post = PostRequestDto::from($request->request->all());
             $errors = Validator::validate($post);
 
-            if (0 === count($errors)) {
+            if (0 === count($errors))
+            {
                 $createdId = $this->postRepository->add($post->toArray());
 
                 if(0 !== $createdId) {
@@ -70,15 +71,17 @@ class PostController extends BaseController
      *
      * @throws Exception
      */
-    public function show(Request $request, int $post_id): string
+    public function show(int $id): string
     {
-        $post = $this->postRepository->get($post_id);
+        //return "Request: {$request->query->get('utm')} Id: $id; Name: $name";
+
+        $post = $this->postRepository->get($id);
         //return $this->toJson($post);
 
         if(!$post)
             throw new ResourceNotFoundException();
 
-        $comments = $this->commentsRepository->getComments($post_id);
+        $comments = $this->commentsRepository->getComments($id);
 
         $vm = new PostViewModel(post: $post);
         return $this->render($vm->getViewName(), ['post' => $vm->toArray(), 'comments' => $comments]);

@@ -36,6 +36,9 @@ class CommentsRepository extends BaseRepository
     {
         $sql = 'SELECT c.*, u.email as author FROM comments c INNER JOIN users u on u.id = c.user_id WHERE post_id = :post_id';
         $rows = $this->db->query($sql, [':post_id' => $post_id]);
+
+        if(!$rows) return;
+
         return buildTree($rows, child_key: 'id');
     }
 

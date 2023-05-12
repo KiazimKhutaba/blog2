@@ -20,6 +20,7 @@ return [
     // Post
     new Route('/post', [PostController::class, 'index'], ['GET', 'POST'], 'post.index', [], [IsAdmin::class]),
     new Route('/post/{id}', [PostController::class, 'show'], ['GET'], 'post.show', ['id' => '[\d]+']),
+    //new Route('/post/{id}/comment/{name}', [PostController::class, 'show'], ['GET'], 'post.show', ['id' => '[\d]+', 'name' => '[\w-]+']),
     new Route('/post/{id}/edit', [PostController::class, 'edit'], ['GET', 'POST'], 'post.edit', ['id' => '[\d]+'], [IsAdmin::class]),
     new Route('/post/{id}/remove', [PostController::class, 'remove'], ['GET'], 'post.remove', ['id' => '[\d]+'], [IsAdmin::class]),
 
@@ -43,4 +44,3 @@ return [
     new Route('/users/{id}/posts', [PostController::class, 'getUserPosts'], ['GET'], 'user.posts', ['id' => '[\d]+']),
     new Route('/users/posts', [PostController::class, 'getUsersPosts'], ['GET'], 'users.posts')
 ];
-

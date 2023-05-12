@@ -30,30 +30,58 @@ class Container
         return isset($this->services[$id]) ? $this->services[$id]() : $this->prepareObject($id);
     }
 
+
     /**
      * @throws ReflectionException
      */
-    private function prepareObject(string $class): object
+    public function getMethodParams(string $obj, string $method): array
     {
-        //if(!is_callable($class)) throw new \Exception("$class is not callable");
+        $types = ['int', 'bool', 'float', 'string', 'array', 'object', 'callable', 'iterable', 'resource', 'null'];
+        $method = new \ReflectionMethod($obj, $method);
+        $methodArguments = $method->getParameters();
+        $args = [];
+
+        if(empty($methodArguments))
+            return $args;
+
+        foreach ($methodArguments as $argument)
+        {
+            $argumentType = $argument->getType()->getName();
+
+            if(in_array($argument->getName(), $types)) {
+                $args[$argument->getName()] = $argument->isOptional() ? $argument->getDefaultValue() : null;
+            }
+            else {
+                //throw new \RuntimeException($argument->getType()->getName());
+                $args[$argument->getName()] = $this->get($argumentType);
+            }
+        }
+
+        return $args;
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    private function prepareObject(string $class): ?object
+    {
+        $types = ['int', 'bool', 'float', 'string', 'array', 'object', 'callable', 'iterable', 'resource', 'null'];
+
+        if(in_array($class, $types)) return null;
 
         $classReflector = new \ReflectionClass($class);
 
-        // Получаем рефлектор конструктора класса, проверяем - есть ли конструктор
-        // Если конструктора нет - сразу возвращаем экземпляр класса
         $constructReflector = $classReflector->getConstructor();
         if (empty($constructReflector)) {
             return new $class;
         }
 
-        // Получаем рефлекторы аргументов конструктора
-        // Если аргументов нет - сразу возвращаем экземпляр класса
         $constructArguments = $constructReflector->getParameters();
         if (empty($constructArguments)) {
             return new $class;
         }
 
-        // Перебираем все аргументы конструктора, собираем их значения
+
         $args = [];
         foreach ($constructArguments as $argument) {
             // Получаем тип аргумента

@@ -2,8 +2,10 @@
 
 namespace MyBlog\Controllers;
 
+use MyBlog\Core\Db\DatabaseInterface;
 use MyBlog\Core\Traits\ToJsonStringTrait;
 use MyBlog\Repositories\PostRepository;
+use MyBlog\Repositories\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Twig\Environment;
 use Twig\Error\LoaderError;

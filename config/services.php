@@ -6,6 +6,7 @@ use MyBlog\Core\Db\DatabaseInterface;
 use MyBlog\Core\Db\SQLiteDatabase;
 use MyBlog\Core\Routing\Router;
 use MyBlog\Core\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Twig\TwigFunction;
@@ -14,6 +15,8 @@ use function MyBlog\Helpers\isProd;
 
 
 return function (Container $container): Container {
+
+    $container->set(Request::class, fn() => Request::createFromGlobals());
 
     // Database
     $container->set(DatabaseInterface::class, fn() => SQLiteDatabase::connect(Config::PATH_TO_SQLITE_FILE));
