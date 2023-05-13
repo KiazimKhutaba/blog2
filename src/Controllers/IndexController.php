@@ -32,8 +32,10 @@ class IndexController extends BaseController
     {
         $limit = $request->query->get('page', 10);
         $posts = $this->postRepository->getPosts($limit);
+        $pages = $this->postRepository->getCount() / 5;
 
-        return $this->render('index/index.html.twig', ['posts' => $posts]);
+
+        return $this->render('index/index.html.twig', ['posts' => $posts, 'pages' => $pages]);
     }
 
 

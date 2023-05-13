@@ -4,6 +4,9 @@ namespace MyBlog\ViewModels;
 
 class LoginViewModel
 {
+    private string $redirect_url;
+
+
     public function __construct
     (
         public readonly string $message = '',
@@ -11,6 +14,7 @@ class LoginViewModel
     )
     {
     }
+
 
 
     public function addError(string $message): self
@@ -34,6 +38,23 @@ class LoginViewModel
         return [
             'message' => $this->message,
             'errors' => $this->errors,
+            'redirect_url' => $this->redirect_url,
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getRedirectUrl(): string
+    {
+        return $this->redirect_url;
+    }
+
+    /**
+     * @param string $redirect_url
+     */
+    public function setRedirectUrl(string $redirect_url): void
+    {
+        $this->redirect_url = $redirect_url;
     }
 }

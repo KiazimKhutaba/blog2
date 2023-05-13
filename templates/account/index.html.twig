@@ -36,6 +36,8 @@
         <div class="mb-3 mt-4">
             <input type="submit" class="btn btn-warning w-100" value="Go" name="accountLoginSubmit" />
         </div>
+
+        <input type="hidden" name="redirect" value="{{ req.redirect_url }}" />
     </form>
 
 </div>

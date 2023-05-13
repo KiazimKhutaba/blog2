@@ -97,4 +97,14 @@ class MySQLDatabase implements DatabaseInterface
     {
         // TODO: Implement insert() method.
     }
+
+    public function queryEx(string $sql, array $params, \Closure $convertor = null, int $fetchMode = \PDO::FETCH_ASSOC)
+    {
+        // TODO: Implement queryEx() method.
+    }
+
+    public function rowsCount(string $table): int
+    {
+        // TODO: Implement rowsCount() method.
+    }
 }

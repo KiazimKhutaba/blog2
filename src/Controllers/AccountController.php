@@ -110,12 +110,10 @@ class AccountController extends BaseController
 
     public function login(Request $request): string|Response
     {
-        // Todo: should be moved to middleware
-        /*if($this->isUserLogged())
-            return $this->redirectToRoute('account.index');*/
-
-
         $vm = new LoginViewModel();
+
+        $redirect_url = $request->query->get('redirect', $request->request->get('redirect', ''));
+        $vm->setRedirectUrl($redirect_url);
 
         if($request->isMethod(Request::METHOD_POST) && $request->request->has('accountLoginSubmit'))
         {
@@ -133,6 +131,12 @@ class AccountController extends BaseController
                     $this->session->set('user_id', $user->id);
                     $this->session->set('role', $user->role);
 
+                    //throw new \Exception($redirect_url);
+
+                    if($redirect_url) {
+                        return $this->redirect($redirect_url);
+                    }
+
                     return $this->redirectToRoute('account.index');
                 }
                 else {
@@ -141,12 +145,13 @@ class AccountController extends BaseController
                 }
             }
             else {
+                // Todo: should be refactored
                 return $this->render($vm->getViewName(), ['req' => $vm->toArray()]);
             }
         }
 
 
-        return $this->render($vm->getViewName());
+        return $this->render($vm->getViewName(), ['req' => $vm->toArray()]);
     }
 
 

@@ -1,7 +1,9 @@
 {% extends "layout.html.twig" %}
 
+{% from 'macroses/_pagination.html.twig' import pagination %}
+
 {% block title %}
-    Последние статьи
+    Последние статьи {{ pages }}
 {% endblock %}
 
 {% block style %}
@@ -42,6 +44,6 @@
 
     <p class="text-secondary">{{ app.time_consumed }}</p>
 
-    {% include 'parts/_pagination.html.twig' %}
+    {{ pagination(pages) }}
 {% endblock %}
 

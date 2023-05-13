@@ -25,8 +25,8 @@ return [
     new Route('/post/{id}/remove', [PostController::class, 'remove'], ['GET'], 'post.remove', ['id' => '[\d]+'], [IsAdmin::class]),
 
     // Post comments
-    new Route('/post/{id}/comment', [PostController::class, 'addComment'], ['POST'], 'post_comment.create', ['id' => '[\d]+'], [IsAuthenticated::class]),
-    new Route('/comment/{id}/remove', [CommentsController::class, 'remove'], ['DELETE'], 'comment.remove', ['id' => '[\d]+'], [
+    new Route('/post/{post_id}/comment', [PostController::class, 'addComment'], ['POST'], 'post_comment.create', ['post_id' => '[\d]+'], [IsAuthenticated::class]),
+    new Route('/comment/{comment_id}/remove', [CommentsController::class, 'remove'], ['DELETE'], 'comment.remove', ['comment_id' => '[\d]+'], [
         IsAuthenticated::class//, IsAuthorized::class => ['object_author_id']
     ]),
 

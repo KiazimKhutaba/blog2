@@ -182,4 +182,9 @@ class SQLiteDatabase implements DatabaseInterface
         $statement = $this->db->prepare($sql);
         return $statement->execute([':id' => $id]);
     }
+
+    public function rowsCount(string $table): int
+    {
+        return $this->db->query("SELECT COUNT(*) FROM $table")->fetchColumn();
+    }
 }

@@ -66,6 +66,11 @@ class PostRepository extends BaseRepository
     }
 
 
+    public function getCount(): int
+    {
+        return $this->db->rowsCount('posts');
+    }
+
     public function getUsersPosts()
     {
         $sql = "select

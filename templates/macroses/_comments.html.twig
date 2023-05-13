@@ -22,7 +22,7 @@
         <input type="hidden" name="parent_id" value="{{ comment.id }}" />
     </form>
     {% else %}
-    <p class="alert alert-warning">Please, <a href="{{ route('account.login') }}">Login</a> to leave comments</p>
+    <p class="alert alert-warning">Please, <a href="{{ route('account.login') }}?redirect={{ route('post.show', { 'id': post_id }) }}">Login</a> to leave comments</p>
     {% endif %}
 
     <!-- List of comments -->
