@@ -43,7 +43,7 @@ class IndexController extends BaseController
 
         $pages = floor($this->postRepository->getCount() / $posts_per_page);
 
-
+        // Todo: not suit for many pages
         return $this->render('index/index.html.twig', ['posts' => $posts, 'pages' => $pages, 'active_page' => $page]);
     }
 

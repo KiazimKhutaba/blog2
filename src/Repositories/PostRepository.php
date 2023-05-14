@@ -9,7 +9,6 @@ use MyBlog\Dtos\PostRequestDto;
 use MyBlog\Models\Comment;
 use MyBlog\Models\Post;
 use function MyBlog\Helpers\debug;
-use function MyBlog\Helpers\e;
 
 class PostRepository extends BaseRepository
 {
