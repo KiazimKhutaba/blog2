@@ -3,6 +3,7 @@
 namespace MyBlog\Dtos;
 
 use Core\Validator\Rules\NotEqual;
+use MyBlog\Core\Validator\Rules\MaxLength;
 use MyBlog\Core\Validator\Rules\MinLength;
 use MyBlog\Core\Validator\Rules\NotBlank;
 use MyBlog\Dtos\RequestDtoInterface;
@@ -32,10 +33,10 @@ class NewCommentRequestDto implements RequestDtoInterface
     public function rules(): array
     {
         return [
-            'post_id' => [new NotEqual(0)],
+            'post_id' => [],
             /*'user_id' => [],*/
             'parent_id' => [],
-            'content' => [new NotBlank(), new MinLength(10)],
+            'content' => [new MinLength(10), new MaxLength(1000)],
             'reply_id' => [],
         ];
     }

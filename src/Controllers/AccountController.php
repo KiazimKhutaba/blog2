@@ -131,9 +131,8 @@ class AccountController extends BaseController
                     $this->session->set('user_id', $user->id);
                     $this->session->set('role', $user->role);
 
-                    //throw new \Exception($redirect_url);
-
-                    if($redirect_url) {
+                    // Todo: prevent redirect outside
+                    if($redirect_url && str_starts_with($redirect_url, '/')) {
                         return $this->redirect($redirect_url);
                     }
 

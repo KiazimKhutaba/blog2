@@ -25,7 +25,7 @@ class PostRepository extends BaseRepository
 
     public function update(int $id, PostRequestDto $post)
     {
-        return $this->db->update($id, $post->toArray());
+        return $this->db->update($id, $post->toArray(), 'posts');
     }
 
 

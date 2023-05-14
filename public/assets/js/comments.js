@@ -1,4 +1,3 @@
-import ApiBase from "./ApiBase.js";
 import {ReplyForm} from "./replyForm.js";
 import {CommentWrapper} from "./commentWrapper.js";
 import CommentApi from "./api/CommentApi.js";
@@ -18,9 +17,9 @@ document.addEventListener('DOMContentLoaded', function ()
         const form = new FormData(e.target);
         const data = await commentApi.create(form.get('post_id'), form);
 
-        if(data) {
+        if('ok' === data.status) {
             const commentDiv = document.createElement('div')
-            commentDiv.innerHTML = CommentWrapper(data);
+            commentDiv.innerHTML = CommentWrapper(data.comment);
 
             const cw = document.querySelector('.comment-wrapper');
 
@@ -61,16 +60,20 @@ document.addEventListener('DOMContentLoaded', function ()
                         e.preventDefault();
 
                         const form = new FormData(e.target);
-                        let data = await commentApi.create(post_id, form);
+                        let res = await commentApi.create(post_id, form);
 
-                        if(data) {
+                        if('ok' === res.status) {
                             wrapper.removeChild(wrapper.lastChild);
                             anchor.dataset.action = actions.reply;
                             anchor.innerText = 'Reply';
 
                             const commentDiv = document.createElement('div')
-                            commentDiv.innerHTML = CommentWrapper(data);
+                            commentDiv.style.marginLeft = '0.5rem';
+                            commentDiv.innerHTML = CommentWrapper(res.comment);
                             wrapper.appendChild(commentDiv)
+                        }
+                        else {
+                            alert('Can\'t add comment');
                         }
                     });
 
@@ -90,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function ()
                     let result = await commentApi.remove(comment_id);
 
                     if (result === 1) {
-                        const commentElement = document.getElementById(`#comment_${comment_id}`);
+                        const commentElement = document.getElementById(`comment_${comment_id}`);
                         comments.removeChild(commentElement);
                     }
 

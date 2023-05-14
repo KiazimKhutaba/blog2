@@ -2,7 +2,7 @@
 
 namespace MyBlog\Core\Validator\Rules;
 
-class MinLength extends Rule
+class MaxLength extends Rule
 {
     public function __construct
     (
@@ -12,6 +12,6 @@ class MinLength extends Rule
 
     function __invoke(string $value, string $field): bool|string
     {
-        return mb_strlen(trim($value)) >= $this->length ?: "Field '$field' length should be $this->length chars or greater";
+        return mb_strlen(trim($value)) <= $this->length ?: "Field '$field' length should be $this->length chars or less";
     }
 }

@@ -14,8 +14,6 @@ use MyBlog\Repositories\CommentsRepository;
 use MyBlog\Repositories\PostRepository;
 use MyBlog\Repositories\UserRepository;
 use MyBlog\ViewModels\PostViewModel;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -73,10 +71,7 @@ class PostController extends BaseController
      */
     public function show(int $id): string
     {
-        //return "Request: {$request->query->get('utm')} Id: $id; Name: $name";
-
         $post = $this->postRepository->get($id);
-        //return $this->toJson($post);
 
         if(!$post)
             throw new ResourceNotFoundException();
@@ -91,10 +86,16 @@ class PostController extends BaseController
     public function addComment(Request $request, int $post_id): string
     {
         $dto = NewCommentRequestDto::from($request->request->all());
-        $user_id = $this->session->get('user_id');
-        $rs = $this->commentsRepository->create($dto, $post_id, $user_id);
+        $errors = Validator::validate($dto);
 
-        return $this->toJson($rs);
+        if (0 === count($errors)) {
+            $user_id = $this->session->get('user_id');
+            $comment = $this->commentsRepository->create($dto, $post_id, $user_id);
+
+            return $this->toJson(['status' => 'ok', 'comment' => $comment]);
+        }
+
+        return $this->toJson(['status' => 'error', 'errors' => $errors]);
     }
 
 

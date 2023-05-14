@@ -1,5 +1,7 @@
 {% macro comments(comments, post_id) %}
 
+{% from 'macroses/_comments2.html.twig' import comments %}
+
 <div class="comments my-4" data-post-id="{{ post_id }}">
 
     <h4 class="mb-3">Comments</h4>
@@ -10,7 +12,7 @@
         <div class="comment-form mb-5">
             <div class="mb-3">
                 <label for="commentContent" class="form-label d-none">Content</label>
-                <textarea class="form-control" id="commentContent" rows="3" placeholder="Leave comment..." name="content"></textarea>
+                <textarea class="form-control" id="commentContent" rows="3" placeholder="Leave comment..." name="content" maxlength="1000"></textarea>
             </div>
 
             <div class="mb-3">
@@ -26,7 +28,8 @@
     {% endif %}
 
     <!-- List of comments -->
-    {% for comment in comments %}
+    {{ comments(comments) }}
+    {#{% for comment in comments %}
     <div class="comment-wrapper" id="#comment_{{ comment.id }}" data-comment-id={{ comment.id }} data-parent-id="{{ comment.parent_id }}">
         <div class="card mb-3 comment">
             <div class="card-header d-flex justify-content-between">
@@ -83,7 +86,7 @@
         {% endfor %}
     {% endif %}
     </div>
-    {% endfor %}
+    {% endfor %}#}
 
 </div>
 

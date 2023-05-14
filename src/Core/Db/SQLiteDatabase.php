@@ -128,7 +128,7 @@ class SQLiteDatabase implements DatabaseInterface
 
     public function getAll(int $limit, string $table, Closure $convertor = null): array
     {
-        $sql = "SELECT * FROM $table ORDER BY created_at LIMIT 0, :limit";
+        $sql = "SELECT * FROM $table ORDER BY created_at DESC LIMIT 0, :limit";
         $statement = $this->db->prepare($sql);
 ;
         $statement->execute([':limit' => $limit]);
