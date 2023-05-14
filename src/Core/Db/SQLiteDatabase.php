@@ -78,9 +78,9 @@ class SQLiteDatabase implements DatabaseInterface
      * @param array $params
      * @param Closure|null $convertor
      * @param int $fetchMode
-     * @return mixed
+     * @return array|bool
      */
-    public function queryEx(string $sql, array $params, Closure $convertor = null, int $fetchMode = \PDO::FETCH_ASSOC): mixed
+    public function queryMany(string $sql, array $params, Closure $convertor = null, int $fetchMode = \PDO::FETCH_ASSOC): array|bool
     {
         $statement = $this->db->prepare($sql);
         $statement->execute($params);

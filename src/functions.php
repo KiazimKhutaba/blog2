@@ -59,6 +59,14 @@ function buildTree(array &$list, string $parent_key = 'parent_id', string $child
     return $recursiveBuilder($tree[0]);
 }
 
+/**
+ * @throws \Exception
+ */
+function debug(mixed $value)
+{
+    throw new \Exception(json_encode($value, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+}
+
 function pagination(BaseRepository $repository)
 {
     try {

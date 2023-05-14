@@ -8,6 +8,8 @@ use MyBlog\Dtos\NewCommentRequestDto;
 use MyBlog\Dtos\PostRequestDto;
 use MyBlog\Models\Comment;
 use MyBlog\Models\Post;
+use function MyBlog\Helpers\debug;
+use function MyBlog\Helpers\e;
 
 class PostRepository extends BaseRepository
 {
@@ -29,28 +31,19 @@ class PostRepository extends BaseRepository
     }
 
 
-    public function getPosts(int $limit): array
+    public function getPosts(int $limit, int $offset = 0): array|bool
     {
-        return $this->db->getAll($limit, 'posts', function (array $rows) {
-            return array_map(static function (array $post) {
-                $post['created_at'] = Utils::formatDatetime($post['created_at']);
-                $post['content'] = substr($post['content'], 0, 100);
-                return $post;
-            }, $rows);
-        });
-    }
+        $convertor = static function (array $post) {
+            $post['title'] = sprintf('#%d %s', $post['id'], $post['title']);
+            $post['created_at'] = Utils::formatDatetime($post['created_at']);
+            $post['content'] = substr($post['content'], 0, 100);
+            return $post;
+        };
 
+        $sql = 'SELECT * FROM posts ORDER BY created_at DESC LIMIT :offset, :limit';
+        //debug(strtr($sql, [':offset' => $offset, ':limit' => $limit]));
 
-
-    public function get2(int|string $id): array
-    {
-        //throw new \Exception($this->db->table);
-
-        return $this->db->get($id) ?: [];
-        /*$sql = 'SELECT p.*, c.* FROM posts p LEFT JOIN comments c on p.id = c.post_id WHERE p.id = :id';
-        return $this->db->queryOne($sql, [':id' => $id], static function (array $row) {
-            return $row;
-        }) ?: [];*/
+        return $this->db->queryMany($sql, [':offset' => $offset, ':limit' => $limit], $convertor);
     }
 
 

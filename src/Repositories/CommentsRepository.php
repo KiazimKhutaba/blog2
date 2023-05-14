@@ -26,7 +26,7 @@ class CommentsRepository extends BaseRepository
 
         if($id) {
             $sql = 'SELECT c.*, u.email as author FROM comments c LEFT JOIN users u on u.id = c.user_id WHERE c.id = :id';
-            return $this->db->queryEx($sql, ['id' => $id])[0];
+            return $this->db->queryMany($sql, ['id' => $id])[0];
         }
 
         return [];
