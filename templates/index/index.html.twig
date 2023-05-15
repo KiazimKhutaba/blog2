@@ -44,6 +44,8 @@
 
     <p class="text-secondary">{{ app.time_consumed }}</p>
 
-    {{ pagination(pages, active_page) }}
+    {#{{ pagination(pages, active_page) }}#}
+
+    {% include 'parts/_paginator.html.twig' %}
 {% endblock %}
 

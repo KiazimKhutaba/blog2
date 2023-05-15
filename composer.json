@@ -22,7 +22,8 @@
         "ext-pdo": "*",
         "vlucas/phpdotenv": "^5.5",
         "psr/http-server-middleware": "^1.0",
-        "symfony/http-foundation": "^6.2"
+        "symfony/http-foundation": "^6.2",
+        "jasongrimes/paginator": "~1.0"
     },
     "require-dev": {
         "robmorgan/phinx": "^0.13.4"
