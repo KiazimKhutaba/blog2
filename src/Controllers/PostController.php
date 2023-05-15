@@ -138,13 +138,13 @@ class PostController extends BaseController
     /**
      * @throws Exception
      */
-    public function remove(Request $request, int $post_id): Response
+    public function remove(int $id): Response
     {
-        if($this->postRepository->remove($post_id)) {
+        if($this->postRepository->remove($id)) {
             return $this->redirect('/');
         }
 
-        throw new Exception("Can\'t remove post with id $post_id");
+        throw new Exception("Can\'t remove post with id $id");
     }
 
     public function getUserPosts(Request $request, int $user_id): string

@@ -32,7 +32,7 @@ class IndexController extends BaseController
      */
     public function index(Request $request): bool|string
     {
-        $posts_per_page = 5;
+        $posts_per_page = 10;
         $currentPage = intval($request->query->get('page', 1));
         // Todo: refactor negative and zero values for page var
         $offset = $currentPage === 1 ? 0 : $posts_per_page * ($currentPage - 1);

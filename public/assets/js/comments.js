@@ -33,7 +33,9 @@ document.addEventListener('DOMContentLoaded', function ()
                 cw.appendChild(commentDiv);
             }
         }
-        //console.log(data);
+
+        // clear form
+        e.target.reset();
     });
 
     comments.addEventListener('click', async (e) => {
@@ -56,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function ()
                     anchor.dataset.action = actions.close;
                     anchor.innerText = 'Close';
 
+                    // Todo: dynamically created comment not react to clicks
                     wrapper.addEventListener('submit', async (e) => {
                         e.preventDefault();
 
@@ -70,7 +73,11 @@ document.addEventListener('DOMContentLoaded', function ()
                             const commentDiv = document.createElement('div')
                             commentDiv.style.marginLeft = '0.5rem';
                             commentDiv.innerHTML = CommentWrapper(res.comment);
-                            wrapper.appendChild(commentDiv)
+                            wrapper.appendChild(commentDiv);
+
+                            // clear form
+                            e.target.reset();
+
                         }
                         else {
                             alert('Can\'t add comment');
