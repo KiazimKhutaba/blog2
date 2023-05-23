@@ -36,10 +36,15 @@ class PostRepository extends BaseRepository
             $post['title'] = sprintf('#%d %s', $post['id'], $post['title']);
             $post['created_at'] = Utils::formatDatetime($post['created_at']);
             $post['content'] = substr($post['content'], 0, 100);
+            $post['vc'] = $post['vc'] ?: 0;
             return $post;
         };
 
-        $sql = 'SELECT * FROM posts ORDER BY created_at DESC LIMIT :offset, :limit';
+        $sql = 'SELECT posts.*, sc.views_count as vc
+                FROM posts 
+                LEFT JOIN stat_counter sc on posts.id = sc.post_id
+                ORDER BY posts.created_at DESC LIMIT :offset, :limit';
+
         //debug(strtr($sql, [':offset' => $offset, ':limit' => $limit]));
 
         return $this->db->queryMany($sql, [':offset' => $offset, ':limit' => $limit], $convertor);

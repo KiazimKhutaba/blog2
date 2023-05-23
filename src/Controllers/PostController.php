@@ -12,6 +12,7 @@ use MyBlog\Dtos\PostRequestDto;
 use MyBlog\Exceptions\ResourceNotFoundException;
 use MyBlog\Repositories\CommentsRepository;
 use MyBlog\Repositories\PostRepository;
+use MyBlog\Repositories\StatCounterRepository;
 use MyBlog\Repositories\UserRepository;
 use MyBlog\ViewModels\PostViewModel;
 use Symfony\Component\HttpFoundation\Request;
@@ -69,7 +70,7 @@ class PostController extends BaseController
      *
      * @throws Exception
      */
-    public function show(int $id): string
+    public function show(Request $request, StatCounterRepository $counterRepository, int $id): string
     {
         $post = $this->postRepository->get($id);
 
@@ -77,6 +78,9 @@ class PostController extends BaseController
             throw new ResourceNotFoundException();
 
         $comments = $this->commentsRepository->getComments($id);
+
+        // count views
+        $counterRepository->countViews($request, $id);
 
         $vm = new PostViewModel(post: $post);
         return $this->render($vm->getViewName(), ['post' => $vm->toArray(), 'comments' => $comments]);

@@ -9,6 +9,7 @@ use MyBlog\Exceptions\ResourceNotFoundException;
 use MyBlog\Repositories\PostRepository;
 use MyBlog\Repositories\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -34,20 +35,17 @@ class IndexController extends BaseController
     {
         $posts_per_page = 10;
         $currentPage = intval($request->query->get('page', 1));
+
         // Todo: refactor negative and zero values for page var
         $offset = $currentPage === 1 ? 0 : $posts_per_page * ($currentPage - 1);
-
         $posts = $this->postRepository->getPosts($posts_per_page, $offset);
 
         if(!$posts)
             throw new ResourceNotFoundException();
 
         $totalItems = $this->postRepository->getCount();
-        //$pages = floor( $totalItems / $posts_per_page);
-
         $paginator = new Paginator($totalItems, $posts_per_page, $currentPage, '?page=(:num)');
 
-        // Todo: not suit for many pages
         return $this->render('index/index.html.twig', ['posts' => $posts, 'paginator' => $paginator]);
     }
 

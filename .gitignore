@@ -6,3 +6,4 @@ docker/nginx/logs/*
 files/cache/templates/*
 vendor/
 docker-compose_old.yml
+test

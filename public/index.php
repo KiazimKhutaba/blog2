@@ -1,11 +1,11 @@
 <?php
 
 
+use Dotenv\Dotenv;
+use MyBlog\Middlewares\CachingMiddleware;
 use MyBlog\Application;
 use MyBlog\Middlewares\AppVersion;
-use MyBlog\Middlewares\IsAdmin;
 use MyBlog\Middlewares\ExecutionTime;
-use Dotenv\Dotenv;
 use Symfony\Component\HttpFoundation\Request;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -21,9 +21,11 @@ $request = Request::createFromGlobals();
 
 $app->add([
     //CheckAuth::class,
+    CachingMiddleware::class,
     AppVersion::class,
-    ExecutionTime::class
+    ExecutionTime::class,
 ]);
 
 $response = $app->process($request);
+
 $response->send();

@@ -14,6 +14,7 @@ use MyBlog\Middlewares\IsAuthenticated;
 return [
     // Main
     new Route('/', [IndexController::class, 'index'], ['GET'], 'index.index'),
+
     new Route('/phpinfo', [IndexController::class, 'phpinfo'], ['GET'], 'main.phpinfo', middlewares: [IsAdmin::class]),
     new Route('/debug', [IndexController::class, 'debug'], ['GET', 'POST', 'PUT', 'DELETE'], 'main.debug'),
 

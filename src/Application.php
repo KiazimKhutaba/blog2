@@ -3,6 +3,7 @@
 namespace MyBlog;
 
 use Exception;
+use InvalidArgumentException;
 use MyBlog\Controllers\BaseController;
 use MyBlog\Controllers\HttpErrorController;
 use MyBlog\Core\Container;
@@ -75,14 +76,18 @@ class Application
      */
     private function pipeline(Request $request, callable $main, array $middlewares = []): Response
     {
-        $action = fn(Request $request): Response => $main($request);
-        if(count($middlewares) == 0) return $action($request);
+        $action = fn(Request $request): Request|Response => $request;
+
+        //$action = fn(Request $request): Response => $main($request); // Todo: wrong!!!
+        if(count($middlewares) == 0) return $main($request);
 
         foreach ($middlewares as $middleware)
         {
             $middlewareObj = $this->container->get($middleware);
             $action = fn(Request $request): Response => $middlewareObj($request, $action);
         }
+
+        $action = fn(Request $request) => $main($request, $action);
 
         return $action($request);
     }
@@ -162,9 +167,9 @@ class Application
      */
     public function handle(Request $request): Response
     {
+
         /** @var Route $matchedRoute */
         $matchedRoute = $this->container->get(Router::class)->match($request);
-
 
         return $this->pipeline(
             $request,
