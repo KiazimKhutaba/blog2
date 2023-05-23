@@ -25,8 +25,8 @@ class CachingMiddleware implements MiddlewareInterface
 
         $route = $this->router->match($request);
 
-        if(\in_array($route->name, ['post.show'])) {
-            throw new \Exception(CachingMiddleware::class);
+        if($route->name == 'post.show') {
+            //throw new \Exception(CachingMiddleware::class);
             $response->headers->replace(['cache-control' => 'max-age=3600, must-revalidate, public']);
         }
 
