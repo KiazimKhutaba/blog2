@@ -78,7 +78,7 @@ class Application
     {
         $action = fn(Request $request): Request|Response => $request;
 
-        //$action = fn(Request $request): Response => $main($request); // Todo: wrong!!!
+        //$action = fn(Request $request): Response => $main($request);
         if(count($middlewares) == 0) return $main($request);
 
         foreach ($middlewares as $middleware)
