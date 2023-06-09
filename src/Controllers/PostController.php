@@ -9,6 +9,7 @@ use MyBlog\Core\Traits\ToJsonStringTrait;
 use MyBlog\Core\Validator\Validator;
 use MyBlog\Dtos\NewCommentRequestDto;
 use MyBlog\Dtos\PostRequestDto;
+use MyBlog\Exceptions\ForbiddenException;
 use MyBlog\Exceptions\ResourceNotFoundException;
 use MyBlog\Repositories\CommentsRepository;
 use MyBlog\Repositories\PostRepository;
@@ -93,8 +94,9 @@ class PostController extends BaseController
         $errors = Validator::validate($dto);
 
         if (0 === count($errors)) {
+
             $user_id = $this->session->get('user_id');
-            $comment = $this->commentsRepository->create($dto, $post_id, $user_id);
+            $comment = $this->commentsRepository->createComment($dto, $post_id, $user_id);
 
             return $this->toJson(['status' => 'ok', 'comment' => $comment]);
         }

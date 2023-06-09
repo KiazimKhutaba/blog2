@@ -37,6 +37,7 @@ class AppVersion //implements MiddlewareInterface
     {
         $response = $next($request);
         $response->headers->set('X-App-Version', '1.0.1');
+        $response->headers->set('X-Powered-By', 'https://github.com/kiazimkhutaba/blog2');
 
         return $response;
     }

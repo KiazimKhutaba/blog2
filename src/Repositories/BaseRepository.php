@@ -14,11 +14,17 @@ class BaseRepository
     {
     }
 
-
     public function add(array $obj): int
     {
         return $this->db->insert($obj, $this->table);
     }
+
+
+    public function create(array $obj): int
+    {
+        return $this->db->insert($obj, $this->table);
+    }
+
 
     public function get(int $id): array
     {

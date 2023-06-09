@@ -18,9 +18,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
+use function MyBlog\Helpers\debug;
 
 class Application
 {
+    use ToJsonStringTrait;
+
     private array $middlewares = [];
 
     private readonly Container $container;
@@ -76,9 +79,8 @@ class Application
      */
     private function pipeline(Request $request, callable $main, array $middlewares = []): Response
     {
-        $action = fn(Request $request): Request|Response => $request;
+        $action = fn(Request $request) => $main($request);
 
-        //$action = fn(Request $request): Response => $main($request);
         if(count($middlewares) == 0) return $main($request);
 
         foreach ($middlewares as $middleware)
@@ -87,11 +89,31 @@ class Application
             $action = fn(Request $request): Response => $middlewareObj($request, $action);
         }
 
-        $action = fn(Request $request) => $main($request, $action);
+        //$action = fn(Request $request) => $main($request);
+        //return $main($request, $action);
 
-        return $action($request);
+        $resp = $action($request);
+
+        return $resp;
     }
 
+
+
+    /**
+     * @throws Exception
+     */
+    public function handle(Request $request): Response
+    {
+
+        /** @var Route $matchedRoute */
+        $matchedRoute = $this->container->get(Router::class)->match($request);
+
+        return $this->pipeline(
+            $request,
+            fn(Request $request) => $this->executeControllerAction($request, $matchedRoute),
+            $matchedRoute->middlewares
+        );
+    }
 
     /**
      * @param Request $request
@@ -141,10 +163,11 @@ class Application
      */
     private function executeControllerAction(Request $request, Route $route): Response
     {
+
         [$controller, $method] = $route->handler;
 
         /** @var BaseController $obj */
-        $obj = $this->container->get($controller); // magic happens here :)
+        $obj = $this->container->get($controller); // magic happens here (DI and etc.) :)
 
         if(method_exists($obj, 'setContainer'))
             $obj->setContainer($this->container);
@@ -157,27 +180,8 @@ class Application
         $response = call_user_func_array([$obj, $method], $attrs);
 
         //return $response;
+        // Todo: if return values should be JsonResponse or another
         return $response instanceof Response ? $response : new Response($response);
     }
-
-    use ToJsonStringTrait;
-
-    /**
-     * @throws Exception
-     */
-    public function handle(Request $request): Response
-    {
-
-        /** @var Route $matchedRoute */
-        $matchedRoute = $this->container->get(Router::class)->match($request);
-
-        return $this->pipeline(
-            $request,
-            fn(Request $request) => $this->executeControllerAction($request, $matchedRoute),
-            $matchedRoute->middlewares
-        );
-    }
-
-
 
 }

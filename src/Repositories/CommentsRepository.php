@@ -9,15 +9,14 @@ use function MyBlog\Helpers\buildTree;
 
 class CommentsRepository extends BaseRepository
 {
-    public function __construct
-    (
+    public function __construct(
         protected DatabaseInterface $db
     )
     {
         parent::__construct($this->db, 'comments');
     }
 
-    public function create(NewCommentRequestDto $dto, int $post_id, int $user_id): array
+    public function createComment(NewCommentRequestDto $dto, int $post_id, int $user_id): array
     {
         $data = [...$dto->toArray(), 'post_id' => $post_id, 'user_id' => $user_id];
         //return $data;

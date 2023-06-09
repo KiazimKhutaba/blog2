@@ -79,7 +79,7 @@ class AccountController extends BaseController
                         'password' => password_hash($dto->password, PASSWORD_DEFAULT)
                     ]);
 
-                    $createdUserId = $this->userRepository->create($new_user);
+                    $createdUserId = $this->userRepository->create($new_user->toArray());
 
                     if($createdUserId) {
 

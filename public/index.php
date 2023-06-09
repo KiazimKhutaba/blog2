@@ -21,11 +21,16 @@ $request = Request::createFromGlobals();
 
 $app->add([
     //CheckAuth::class,
-    CachingMiddleware::class,
     AppVersion::class,
     ExecutionTime::class,
+    CachingMiddleware::class,
+
 ]);
 
 $response = $app->process($request);
 
+/**
+ * Todo: middlewares work but headers not redefined, their value duplicated
+ *
+ */
 $response->send();
