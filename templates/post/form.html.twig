@@ -23,42 +23,46 @@
     </nav>
 
     {% if post.is_edit %}
-        <form action="{{ route('post.edit', {'id': post.id}) }}" method="post">
-    {% else %}
-        <form action="/post" method="post">
-    {% endif %}
-
-    {% if post.is_edit %}
         <h3 class="pb-3">Редактирование</h3>
     {% else %}
         <h3 class="pb-3">Новая статья</h3>
     {% endif %}
 
-    {{ form_errors(post) }}
+    {% if post.is_edit %}
+        <form action="{{ route('post.edit', {'id': post.id}) }}" method="post">
+    {% else %}
+        <form action="/post" method="post">
+    {% endif %}
 
-    <div class="mb-3">
-        <label for="newsTitle" class="form-label">Заголовок</label>
-        <input type="text" class="form-control" id="newsTitle" name="title"
-               value="{{ post.title }}" placeholder="Type title here">
-    </div>
-    <div class="mb-3">
-        <label for="formatted_input" class="form-label">Текст</label>
+        {{ form_errors(post) }}
 
-        <div id="formatted_input" contenteditable style="border:solid 1px gray;padding:1em;width:100%;min-height:2em;">
-            {{ post.content | raw }}
+        <div class="mb-3">
+            <label for="newsTitle" class="form-label">Заголовок</label>
+            <input type="text" class="form-control" id="newsTitle" name="title"
+                   value="{{ post.title }}" placeholder="Type title here">
         </div>
 
-        <input type="hidden" name="content" value="" id="formatted_input_value"/>
-        {# <textarea class="form-control" id="newsText" rows="10" name="content"
-                      placeholder="Type text here">{{ post.content }}</textarea> #}
-    </div>
-    <div class="mb-3">
-        {% if post.is_edit %}
-            <input type="submit" value="Обновить" class="btn btn-success" name="postSubmit"/>
-        {% else %}
-            <input type="submit" value="Добавить" class="btn btn-success" name="postSubmit"/>
-        {% endif %}
-    </div>
+        <div class="mb-3">
+            <label for="formatted_input" class="form-label">Текст</label>
+
+            <div id="formatted_input" contenteditable style="border:solid 1px gray;padding:1em;width:100%;min-height:2em;">
+                {{ post.content | raw }}
+            </div>
+
+            <input type="hidden" name="content" value="" id="formatted_input_value" />
+        </div>
+
+        {#
+            Todo: using raw filter leads to unexpected bugs, such as form tag closing,
+            so markup will became invalid
+        #}
+        <div class="mb-3">
+            {% if post.is_edit %}
+                <input type="submit" value="Обновить" class="btn btn-success" name="postSubmit"/>
+            {% else %}
+                <input type="submit" value="Добавить" class="btn btn-success" name="postSubmit"/>
+            {% endif %}
+        </div>
     </form>
 
     <script>

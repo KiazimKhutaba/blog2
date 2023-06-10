@@ -8,6 +8,7 @@ use MyBlog\Core\Traits\ToJsonStringTrait;
 use MyBlog\Exceptions\ResourceNotFoundException;
 use MyBlog\Repositories\PostRepository;
 use MyBlog\Repositories\UserRepository;
+use MyBlog\ViewModels\IndexView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
@@ -21,7 +22,8 @@ class IndexController extends BaseController
 
     public function __construct
     (
-        private readonly PostRepository $postRepository
+        private readonly PostRepository $postRepository,
+        private readonly IndexView $view
     )
     {
     }
@@ -31,7 +33,7 @@ class IndexController extends BaseController
      * @throws RuntimeError
      * @throws LoaderError
      */
-    public function index(Request $request): bool|string
+    public function index(Request $request): string
     {
         $posts_per_page = 10;
         $currentPage = intval($request->query->get('page', 1));
@@ -46,7 +48,7 @@ class IndexController extends BaseController
         $totalItems = $this->postRepository->getCount();
         $paginator = new Paginator($totalItems, $posts_per_page, $currentPage, '?page=(:num)');
 
-        return $this->render('index/index.html.twig', ['posts' => $posts, 'paginator' => $paginator]);
+        return $this->view->index($posts, $paginator);
     }
 
 
@@ -56,12 +58,19 @@ class IndexController extends BaseController
         phpinfo();
         $info = ob_get_clean();
 
-        return $this->render('index/phpinfo.html.twig', ['info' => $info]);
+        return $this->view->phpinfo($info);
     }
 
 
     public function debug(Request $request): string
     {
         return $this->toJson($request->request->all());
+    }
+
+
+
+    public function search(Request $request)
+    {
+        throw  new \Exception($request->query->get('q', 'none'));
     }
 }

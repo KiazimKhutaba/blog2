@@ -25,8 +25,10 @@
         </nav>
 
         {% if is_admin() %}
+        <p>
             <a class="btn btn-sm btn-success my-3" href="/post/{{ post.id }}/edit">Редактировать</a>
             <a class="btn btn-sm btn-danger my-3" href="/post/{{ post.id }}/remove" onclick="return confirmDelete({{ post.id }})">Удалить</a>
+        </p>
         {% endif %}
 
         <h2 class="mb-4">{{ post.title }}</h2>
