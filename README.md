@@ -2,7 +2,7 @@ Blog2 - MVC blog implemented from scratch using PHP 8
 
 ### How to run?
 
-1. Clone repo
+1. Clone repo and run `cd blog2`
 2. run `docker compose up -d` in project root
 3. login into app container (`docker exec -it blog-php /bin/bash`) and run `su dapp && composer install`
 4. run migrations - `chmod +x ./init.sh && ./init.sh`
