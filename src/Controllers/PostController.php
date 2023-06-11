@@ -63,7 +63,7 @@ class PostController extends BaseController
                 }
 
             } else {
-                $vm = new PostViewModel(message: 'Cant create post', errors: $errors);
+                $vm = new PostViewModel(message: 'Can\'t create post', errors: $errors);
                 return $this->render('post/form.html.twig', ['post' => $vm->toArray()]);
             }
 

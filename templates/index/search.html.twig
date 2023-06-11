@@ -1,0 +1,48 @@
+{% extends "layout.html.twig" %}
+
+{% from 'macroses/_pagination.html.twig' import pagination %}
+
+{% block title %}
+    Найденные статьи {{ posts.length }}
+{% endblock %}
+
+{% block style %}
+    <style>
+        .card\:hover:hover {
+            background: var(--bs-primary);
+            color: white;
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    <h2 class="mt-2 mb-4">Найденные статьи</h2>
+
+    <div class="row row-cols-1 g-4">
+        {% if posts|length > 0 %}
+            {% for post in posts %}
+                <div class="col">
+                    <a href="/post/{{ post.id }}">
+                        <div class="card h-100 card:hover" title="Click to open post">
+                            <!--<img src="..." class="card-img-top" alt="...">-->
+                            <div class="card-body">
+                                <h5 class="card-title">{{ post.title }}</h5>
+                                <p class="card-text">{{ post.content }}</p>
+                            </div>
+                            <div class="card-footer d-flex justify-content-between">
+                                <small class="text-muted">{{ post.created_at }}</small>
+                                <small class="text-muted">{{ post.vc }} views</small>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <h4>No results</h4>
+        {% endif %}
+    </div>
+
+    {% include 'parts/_paginator.html.twig' %}
+{% endblock %}
+

@@ -17,6 +17,11 @@ class IndexView
         return $this->environment->render('index/index.html.twig', ['posts' => $posts, 'paginator' => $paginator]);
     }
 
+    public function search(array $posts, Paginator $paginator): string
+    {
+        return $this->environment->render('index/search.html.twig', ['posts' => $posts, 'paginator' => $paginator]);
+    }
+
 
     public function phpinfo(string $info): string
     {
