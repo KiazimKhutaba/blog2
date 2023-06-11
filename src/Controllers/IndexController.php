@@ -2,19 +2,15 @@
 
 namespace MyBlog\Controllers;
 
+use Exception;
 use JasonGrimes\Paginator;
-use MyBlog\Core\Db\DatabaseInterface;
+use MyBlog\Core\Routing\Annotation\Route;
 use MyBlog\Core\Traits\ToJsonStringTrait;
 use MyBlog\Exceptions\ResourceNotFoundException;
+use MyBlog\Middlewares\IsAdmin;
 use MyBlog\Repositories\PostRepository;
-use MyBlog\Repositories\UserRepository;
 use MyBlog\ViewModels\IndexView;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Twig\Environment;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
 
 class IndexController extends BaseController
 {
@@ -23,16 +19,15 @@ class IndexController extends BaseController
     public function __construct
     (
         private readonly PostRepository $postRepository,
-        private readonly IndexView $view
+        private readonly IndexView      $view
     )
     {
     }
 
     /**
-     * @throws SyntaxError
-     * @throws RuntimeError
-     * @throws LoaderError
+     * @throws ResourceNotFoundException
      */
+    #[Route('/', ['GET'], 'index.index')]
     public function index(Request $request): string
     {
         $posts_per_page = 10;
@@ -42,7 +37,7 @@ class IndexController extends BaseController
         $offset = $currentPage === 1 ? 0 : $posts_per_page * ($currentPage - 1);
         $posts = $this->postRepository->getPosts($posts_per_page, $offset);
 
-        if(!$posts)
+        if (!$posts)
             throw new ResourceNotFoundException();
 
         $totalItems = $this->postRepository->getCount();
@@ -52,6 +47,7 @@ class IndexController extends BaseController
     }
 
 
+    #[Route('/phpinfo', ['GET'], 'main.phpinfo', middlewares: [IsAdmin::class])]
     public function phpinfo(): string
     {
         ob_start();
@@ -62,15 +58,16 @@ class IndexController extends BaseController
     }
 
 
+    #[Route('/debug', ['GET', 'POST', 'PUT', 'DELETE'], 'main.debug')]
     public function debug(Request $request): string
     {
         return $this->toJson($request->request->all());
     }
 
 
-
+    #[Route('/search', ['GET'], 'main.search')]
     public function search(Request $request)
     {
-        throw  new \Exception($request->query->get('q', 'none'));
+        throw  new Exception($request->query->get('q', 'none'));
     }
 }

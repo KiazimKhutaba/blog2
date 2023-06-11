@@ -2,6 +2,7 @@
 
 namespace MyBlog\Middlewares;
 
+use Closure;
 use MyBlog\Core\Routing\Router;
 use MyBlog\Core\Session\SessionInterface;
 use MyBlog\Middlewares\MiddlewareInterface;
@@ -23,7 +24,7 @@ class RedirectIfAuthenticated implements MiddlewareInterface
     /**
      * @inheritDoc
      */
-    public function __invoke(Request $request, \Closure $next): Response
+    public function __invoke(Request $request, Closure $next): Response
     {
 
         if($this->userIsLogged()) {

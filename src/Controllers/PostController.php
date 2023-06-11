@@ -4,6 +4,7 @@ namespace MyBlog\Controllers;
 
 
 use Exception;
+use MyBlog\Core\Routing\Annotation\Route;
 use MyBlog\Core\Session\SessionInterface;
 use MyBlog\Core\Traits\ToJsonStringTrait;
 use MyBlog\Core\Validator\Validator;
@@ -11,11 +12,14 @@ use MyBlog\Dtos\NewCommentRequestDto;
 use MyBlog\Dtos\PostRequestDto;
 use MyBlog\Exceptions\ForbiddenException;
 use MyBlog\Exceptions\ResourceNotFoundException;
+use MyBlog\Middlewares\IsAdmin;
+use MyBlog\Middlewares\IsAuthenticated;
 use MyBlog\Repositories\CommentsRepository;
 use MyBlog\Repositories\PostRepository;
 use MyBlog\Repositories\StatCounterRepository;
 use MyBlog\Repositories\UserRepository;
 use MyBlog\ViewModels\PostViewModel;
+use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -35,9 +39,10 @@ class PostController extends BaseController
     /**
      * Show the post form and process post adding
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @throws Exception
      */
+    #[Route('/post', ['GET', 'POST'], 'post.index', middlewares: [IsAdmin::class])]
     public function index(Request $request): string|Response
     {
         if ($request->isMethod(Request::METHOD_POST) && $request->request->has('postSubmit')) {
@@ -71,6 +76,7 @@ class PostController extends BaseController
      *
      * @throws Exception
      */
+    #[Route('/post/{id}', ['GET'], 'post.show', ['id' => '[\d]+'])]
     public function show(Request $request, StatCounterRepository $counterRepository, int $id): string
     {
         $post = $this->postRepository->get($id);
@@ -88,6 +94,7 @@ class PostController extends BaseController
     }
 
 
+    #[Route('/post/{post_id}/comment', ['POST'], 'post_comment.create', ['post_id' => '[\d]+'], [IsAuthenticated::class]),]
     public function addComment(Request $request, int $post_id): string
     {
         $dto = NewCommentRequestDto::from($request->request->all());
@@ -108,9 +115,11 @@ class PostController extends BaseController
     // Todo: when error - form reset happens
 
     /**
-     * @throws \ReflectionException
+     *
+     * @throws ReflectionException
      * @throws Exception
      */
+    #[Route('/post/{id}/edit', ['GET', 'POST'], 'post.edit', ['id' => '[\d]+'], [IsAdmin::class])]
     public function edit(Request $request, int $id): string|Response
     {
         if ($request->isMethod(Request::METHOD_POST) && $request->request->has('postSubmit'))
@@ -144,6 +153,7 @@ class PostController extends BaseController
     /**
      * @throws Exception
      */
+    #[Route('/post/{id}/remove', ['GET'], 'post.remove', ['id' => '[\d]+'], [IsAdmin::class])]
     public function remove(int $id): Response
     {
         if($this->postRepository->remove($id)) {
@@ -153,12 +163,14 @@ class PostController extends BaseController
         throw new Exception("Can\'t remove post with id $id");
     }
 
+    #[Route('/users/{id}/posts', ['GET'], 'user.posts', ['id' => '[\d]+'])]
     public function getUserPosts(Request $request, int $user_id): string
     {
         $posts = $this->postRepository->getUserPosts($user_id);
         return $this->toJson($posts);
     }
 
+    #[Route('/users/posts', ['GET'], 'users.posts')]
     public function getUsersPosts(): string
     {
         $posts = $this->postRepository->getUsersPosts();

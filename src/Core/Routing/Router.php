@@ -15,7 +15,7 @@ class Router
     public array $routes = [];
 
 
-    public function addRoutes(array $routes = [])
+    public function addRoutes(array $routes = []): void
     {
         foreach ($routes as $route) {
             $this->addRoute($route);

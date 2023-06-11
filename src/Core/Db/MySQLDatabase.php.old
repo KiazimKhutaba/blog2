@@ -2,10 +2,13 @@
 
 namespace MyBlog\Core\Db;
 
+use Closure;
+use PDO;
+
 class MySQLDatabase implements DatabaseInterface
 {
     private static ?IDatabase $db = null;
-    private \PDO $pdo;
+    private PDO $pdo;
 
     private function __construct() {}
 
@@ -30,13 +33,13 @@ class MySQLDatabase implements DatabaseInterface
 
         $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
         $opts = [
-            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-            \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-            \PDO::ATTR_EMULATE_PREPARES => false,
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false,
         ];
 
         // подключение к базе
-        return new \PDO($dsn, $user, $pass, $opts);
+        return new PDO($dsn, $user, $pass, $opts);
     }
 
 
@@ -78,27 +81,27 @@ class MySQLDatabase implements DatabaseInterface
         // TODO: Implement delete() method.
     }
 
-    public function query(string $sql, array $params, \Closure $convertor = null, int $fetchMode = \PDO::FETCH_ASSOC)
+    public function query(string $sql, array $params, Closure $convertor = null, int $fetchMode = PDO::FETCH_ASSOC)
     {
         // TODO: Implement query() method.
     }
 
-    public function queryOne(string $sql, array $params, \Closure $convertor = null, int $fetchMode = \PDO::FETCH_ASSOC)
+    public function queryOne(string $sql, array $params, Closure $convertor = null, int $fetchMode = PDO::FETCH_ASSOC)
     {
         // TODO: Implement queryOne() method.
     }
 
-    public function get($id)
+    public function get($id): array
     {
         // TODO: Implement get() method.
     }
 
-    public function insert($data)
+    public function insert($data): int
     {
         // TODO: Implement insert() method.
     }
 
-    public function queryEx(string $sql, array $params, \Closure $convertor = null, int $fetchMode = \PDO::FETCH_ASSOC)
+    public function queryEx(string $sql, array $params, Closure $convertor = null, int $fetchMode = PDO::FETCH_ASSOC)
     {
         // TODO: Implement queryEx() method.
     }

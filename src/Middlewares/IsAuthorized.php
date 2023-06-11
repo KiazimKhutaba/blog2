@@ -2,6 +2,7 @@
 
 namespace MyBlog\Middlewares;
 
+use Closure;
 use MyBlog\Core\Session\SessionInterface;
 use MyBlog\Exceptions\ForbiddenException;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,7 +22,7 @@ class IsAuthorized implements MiddlewareInterface
     /**
      * @inheritDoc
      */
-    public function __invoke(Request $request, \Closure $next): Response
+    public function __invoke(Request $request, Closure $next): Response
     {
         $user_id = $this->session->get('user_id');
         $is_admin = $this->session->get('role') === 'admin';

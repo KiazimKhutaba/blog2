@@ -39,7 +39,7 @@ class CommentsController extends BaseController
             if($commentCreated) {
                 return $this->toJson($comment->toArray());
             }
-            throw new \Exception("Can't create comment");
+            throw new Exception("Can't create comment");
         }
 
         return $this->render('comments/list.html.twig');

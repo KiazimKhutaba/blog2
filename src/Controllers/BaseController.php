@@ -7,6 +7,7 @@ use MyBlog\Core\Routing\Router;
 use MyBlog\Core\Session\SessionInterface;
 use MyBlog\Core\Utils;
 use MyBlog\Exceptions\ForbiddenException;
+use ReflectionException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Twig\Environment;
 use Twig\Error\LoaderError;
@@ -33,7 +34,7 @@ class BaseController
 
     /**
      * @throws SyntaxError
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @throws RuntimeError
      * @throws LoaderError
      */

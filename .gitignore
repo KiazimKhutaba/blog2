@@ -8,3 +8,4 @@ vendor/
 docker-compose_old.yml
 test
 files/app.db.sqlite3
+files/routes.php

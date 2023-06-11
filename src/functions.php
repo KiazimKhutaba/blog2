@@ -3,6 +3,7 @@
 namespace MyBlog\Helpers;
 
 
+use Exception;
 use MyBlog\Repositories\BaseRepository;
 
 function env(string $varname, $default = '')
@@ -60,9 +61,9 @@ function buildTree(array &$list, string $parent_key = 'parent_id', string $child
 }
 
 /**
- * @throws \Exception
+ * @throws Exception
  */
 function debug(mixed $value)
 {
-    throw new \Exception(json_encode($value, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+    throw new Exception(json_encode($value, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
 }

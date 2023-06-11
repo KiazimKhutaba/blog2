@@ -2,6 +2,7 @@
 
 namespace MyBlog\Middlewares;
 
+use Closure;
 use MyBlog\Core\Routing\Router;
 use MyBlog\Core\Session\SessionInterface;
 use MyBlog\Exceptions\ForbiddenException;
@@ -21,7 +22,7 @@ class IsAuthenticated implements MiddlewareInterface
      * @inheritDoc
      * @throws ForbiddenException
      */
-    public function __invoke(Request $request, \Closure $next): Response
+    public function __invoke(Request $request, Closure $next): Response
     {
         if(!$this->session->has('user_id')) {
             throw new ForbiddenException();

@@ -3,6 +3,7 @@
 namespace MyBlog\Middlewares;
 
 
+use Closure;
 use Exception;
 use MyBlog\Core\Routing\Router;
 use MyBlog\Exceptions\ForbiddenException;
@@ -22,7 +23,7 @@ class CachingMiddleware implements MiddlewareInterface
     /**
      * @throws Exception
      */
-    public function __invoke(Request $request, \Closure $next): Response
+    public function __invoke(Request $request, Closure $next): Response
     {
         /** @var Response $response */
         $response = $next($request);

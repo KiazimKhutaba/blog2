@@ -2,27 +2,35 @@
 
 namespace MyBlog;
 
+use Error;
 use Exception;
 use InvalidArgumentException;
 use MyBlog\Controllers\BaseController;
 use MyBlog\Controllers\HttpErrorController;
 use MyBlog\Core\Container;
+use MyBlog\Core\Routing\ClassNamesCollector;
 use MyBlog\Core\Routing\Route;
+use MyBlog\Core\Routing\RouteCollector;
 use MyBlog\Core\Routing\Router;
 use MyBlog\Core\Traits\ToJsonStringTrait;
 use MyBlog\Exceptions\ForbiddenException;
 use MyBlog\Exceptions\ResourceNotFoundException;
+use ReflectionException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use function MyBlog\Helpers\debug;
+use function MyBlog\Helpers\isDev;
 
 class Application
 {
     use ToJsonStringTrait;
+
+    public const ROUTES_DUMP_FILE =  __DIR__ . '/../files/routes.php';
 
     private array $middlewares = [];
 
@@ -40,7 +48,7 @@ class Application
 
     //use DebugPrintTrait;
 
-    public function initRoutes(): void
+    public function _initRoutes(): void
     {
         /** @var list<Route> $routes */
         $routes = require_once __DIR__ . '/../config/routes.php';
@@ -48,10 +56,30 @@ class Application
         /** @var Router $router */
         $router = $this->container->get(Router::class);
 
-        foreach ($routes as $route)
-            $router->addRoute($route);
+
+
+        $router->addRoutes($routes);
 
         //$this->print($router->getRoutes());
+    }
+
+
+    public function initRoutes(): void
+    {
+        $controllers = ClassNamesCollector::collect(__DIR__ . '/../src/Controllers', 'MyBlog\\Controllers\\');
+        $routeCollector = new RouteCollector();
+
+        /** @var Router $router */
+        $router = $this->container->get(Router::class);
+
+        if(isDev()) {
+            $routes = $routeCollector->collectAll($controllers);
+        }
+        else {
+            $routes = $routeCollector->getDump(self::ROUTES_DUMP_FILE, $controllers);
+        }
+
+        $router->addRoutes($routes);
     }
 
     public function initServices(): Container
@@ -75,7 +103,7 @@ class Application
 
 
     /**
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     private function pipeline(Request $request, callable $main, array $middlewares = []): Response
     {
@@ -89,12 +117,7 @@ class Application
             $action = fn(Request $request): Response => $middlewareObj($request, $action);
         }
 
-        //$action = fn(Request $request) => $main($request);
-        //return $main($request, $action);
-
-        $resp = $action($request);
-
-        return $resp;
+        return $action($request);
     }
 
 
@@ -121,14 +144,14 @@ class Application
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function process(Request $request): Response
     {
         try {
             $response = $this->pipeline($request, [$this, 'handle'], $this->middlewares);
         }
-        catch (\Throwable|\Error $e)
+        catch (Throwable|Error $e)
         {
             /** @var HttpErrorController $error */
             $error = $this->container->get(HttpErrorController::class);
@@ -152,14 +175,14 @@ class Application
 
     /**
      */
-    public function appExceptionHandler(\Throwable $e): void
+    public function appExceptionHandler(Throwable $e): void
     {
         print $e->getMessage();
     }
 
 
     /**
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     private function executeControllerAction(Request $request, Route $route): Response
     {

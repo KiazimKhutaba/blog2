@@ -2,8 +2,10 @@
 
 namespace MyBlog\Controllers;
 
+use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -15,7 +17,7 @@ class HttpErrorController extends BaseController
      * @throws RuntimeError
      * @throws SyntaxError
      * @throws LoaderError
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function error404(Request $request): Response
     {
@@ -23,7 +25,7 @@ class HttpErrorController extends BaseController
     }
 
 
-    public function error500(Request $request, \Throwable $exception): Response
+    public function error500(Request $request, Throwable $exception): Response
     {
         $content = $this->render('500.html.twig', ['e' => $exception, 'trace' => $exception->getTraceAsString()]);
         return new Response($content, 500);

@@ -2,11 +2,13 @@
 
 namespace MyBlog\Controllers;
 
+use MyBlog\Core\Routing\Annotation\Route;
 use MyBlog\Core\Session\SessionInterface;
 use MyBlog\Core\Traits\ToJsonStringTrait;
 use MyBlog\Core\Validator\Validator;
 use MyBlog\Dtos\LoginRequestDto;
 use MyBlog\Dtos\NewAccountRequestDto;
+use MyBlog\Middlewares\RedirectIfAuthenticated;
 use MyBlog\Repositories\UserRepository;
 use MyBlog\ViewModels\LoginViewModel;
 use MyBlog\ViewModels\RegistrationViewModel;
@@ -27,6 +29,7 @@ class AccountController extends BaseController
     }
 
 
+    #[Route('/profile', ['GET'], 'account.index')]
     public function index(): string|Response
     {
         if($this->isUserLogged()) {
@@ -40,6 +43,7 @@ class AccountController extends BaseController
     }
 
 
+    #[Route('/logout', ['GET'], 'account.logout')]
     public function logout(): Response
     {
         if($this->isUserLogged()) {
@@ -49,6 +53,7 @@ class AccountController extends BaseController
         return $this->redirectToRoute('account.login');
     }
 
+    #[Route('/registration', ['GET', 'POST'], 'account.create', [], [RedirectIfAuthenticated::class])]
     public function registration(Request $request): string|Response
     {
         // Todo: to middleware
@@ -108,6 +113,7 @@ class AccountController extends BaseController
         return $this->render($vm->getViewName());
     }
 
+    #[Route('/login', ['GET', 'POST'], 'account.login', middlewares: [RedirectIfAuthenticated::class])]
     public function login(Request $request): string|Response
     {
         $vm = new LoginViewModel();

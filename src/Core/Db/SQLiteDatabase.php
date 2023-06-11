@@ -4,18 +4,19 @@ namespace MyBlog\Core\Db;
 
 
 use Closure;
+use PDO;
 
 class SQLiteDatabase implements DatabaseInterface
 {
-    private \PDO $db;
+    private PDO $db;
     private static ?self $instance = null;
     public string $table;
 
 
     private function __construct(string $pathToDb)
     {
-        $this->db = new \PDO("sqlite:" . $pathToDb);
-        $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $this->db = new PDO("sqlite:" . $pathToDb);
+        $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 
 
@@ -58,7 +59,7 @@ class SQLiteDatabase implements DatabaseInterface
      * @param int $fetchMode
      * @return bool|array|object
      */
-    public function query(string $sql, array $params, Closure $convertor = null, int $fetchMode = \PDO::FETCH_ASSOC): mixed
+    public function query(string $sql, array $params, Closure $convertor = null, int $fetchMode = PDO::FETCH_ASSOC): mixed
     {
         $statement = $this->db->prepare($sql);
         $statement->execute($params);
@@ -80,7 +81,7 @@ class SQLiteDatabase implements DatabaseInterface
      * @param int $fetchMode
      * @return array|bool
      */
-    public function queryMany(string $sql, array $params, Closure $convertor = null, int $fetchMode = \PDO::FETCH_ASSOC): array|bool
+    public function queryMany(string $sql, array $params, Closure $convertor = null, int $fetchMode = PDO::FETCH_ASSOC): array|bool
     {
         $statement = $this->db->prepare($sql);
         $statement->execute($params);
@@ -98,7 +99,7 @@ class SQLiteDatabase implements DatabaseInterface
         return $rows;
     }
 
-    public function queryOne(string $sql, array $params, Closure $convertor = null, int $fetchMode = \PDO::FETCH_ASSOC): mixed
+    public function queryOne(string $sql, array $params, Closure $convertor = null, int $fetchMode = PDO::FETCH_ASSOC): mixed
     {
         $statement = $this->db->prepare($sql);
         $statement->execute($params);
@@ -123,16 +124,15 @@ class SQLiteDatabase implements DatabaseInterface
             ':id' => $id
         ]);
 
-        return $statement->fetch(\PDO::FETCH_ASSOC) ?: [];
+        return $statement->fetch(PDO::FETCH_ASSOC) ?: [];
     }
 
     public function getAll(int $limit, string $table, Closure $convertor = null): array
     {
         $sql = "SELECT * FROM $table ORDER BY created_at DESC LIMIT 0, :limit";
         $statement = $this->db->prepare($sql);
-;
         $statement->execute([':limit' => $limit]);
-        $rows = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
 
         return $convertor !== null ? $convertor($rows) : $rows;
     }

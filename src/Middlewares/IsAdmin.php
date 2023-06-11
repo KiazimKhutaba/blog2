@@ -2,6 +2,8 @@
 
 namespace MyBlog\Middlewares;
 
+use Closure;
+use Exception;
 use MyBlog\Core\Routing\Router;
 use MyBlog\Core\Session\SessionInterface;
 use MyBlog\Core\Traits\DebugPrintTrait;
@@ -24,9 +26,9 @@ class IsAdmin implements MiddlewareInterface
 
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    public function __invoke(Request $request, \Closure $next): Response
+    public function __invoke(Request $request, Closure $next): Response
     {
         /*$matchedRoute = $this->router->match($request);
 

@@ -2,7 +2,9 @@
 
 namespace MyBlog\Core;
 
+use ReflectionClass;
 use ReflectionException;
+use ReflectionMethod;
 
 /**
  * @see https://habr.com/ru/articles/655399/
@@ -37,7 +39,7 @@ class Container
     public function getMethodParams(string $obj, string $method): array
     {
         $types = ['int', 'bool', 'float', 'string', 'array', 'object', 'callable', 'iterable', 'resource', 'null'];
-        $method = new \ReflectionMethod($obj, $method);
+        $method = new ReflectionMethod($obj, $method);
         $methodArguments = $method->getParameters();
         $args = [];
 
@@ -69,7 +71,7 @@ class Container
 
         if(in_array($class, $types)) return null;
 
-        $classReflector = new \ReflectionClass($class);
+        $classReflector = new ReflectionClass($class);
 
         $constructReflector = $classReflector->getConstructor();
         if (empty($constructReflector)) {

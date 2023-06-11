@@ -2,7 +2,9 @@
 
 namespace MyBlog\Core\Validator;
 
-class ValidationRuleException extends \Exception
+use Exception;
+
+class ValidationRuleException extends Exception
 {
 
 }

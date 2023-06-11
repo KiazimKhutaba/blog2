@@ -4,6 +4,7 @@ namespace MyBlog\Core;
 
 
 use DateTime;
+use Exception;
 
 class Utils
 {
@@ -26,7 +27,7 @@ class Utils
     {
         try {
             $datetimeObj = new DateTime($datetime);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $e->getMessage();
         }
         return $datetimeObj->format($format);

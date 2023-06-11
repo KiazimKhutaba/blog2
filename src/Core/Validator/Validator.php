@@ -4,11 +4,13 @@ namespace MyBlog\Core\Validator;
 
 use MyBlog\Core\Validator\Rules\Rule;
 use MyBlog\Dtos\RequestDtoInterface;
+use ReflectionException;
+use ReflectionProperty;
 
 class Validator
 {
     /**
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public static function validate(RequestDtoInterface $dto): array
     {
@@ -16,7 +18,7 @@ class Validator
 
         foreach ($dto->rules() as $property_name => $ruleSet)
         {
-            $property = new \ReflectionProperty($dto, $property_name);
+            $property = new ReflectionProperty($dto, $property_name);
 
             if($property->name === $property_name)
             {

@@ -29,8 +29,5 @@ $app->add([
 
 $response = $app->process($request);
 
-/**
- * Todo: middlewares work but headers not redefined, their value duplicated
- *
- */
+// Todo: middlewares work but headers not redefined, their value duplicated
 $response->send();
