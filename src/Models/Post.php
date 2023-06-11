@@ -11,6 +11,7 @@ class Post
         public readonly string $content,
         public readonly int $user_id,
         public readonly string $created_at,
+        public readonly ?string $updated_at,
     )
     {
     }

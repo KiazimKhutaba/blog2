@@ -52,7 +52,8 @@ class PostController extends BaseController
 
             if (0 === count($errors))
             {
-                $createdId = $this->postRepository->add($post->toArray());
+                $user_id = $this->session->get('user_id');
+                $createdId = $this->postRepository->add(array_merge($post->toArray(), ['user_id' => $user_id]));
 
                 if(0 !== $createdId) {
                     return $this->redirectToRoute('post.show', ['id' => $createdId]);

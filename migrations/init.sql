@@ -7,7 +7,7 @@ create table if not exists posts
 );
 
 
-CREATE INDEX idx_title ON posts(title);
+CREATE INDEX idx_title ON posts2(title);
 
 
 /**
