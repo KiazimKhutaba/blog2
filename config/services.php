@@ -19,7 +19,10 @@ return function (Container $container): Container {
     $container->set(Request::class, fn() => Request::createFromGlobals());
 
     // Database
-    $container->set(DatabaseInterface::class, fn() => SQLiteDatabase::connect(Config::PATH_TO_SQLITE_FILE));
+    $container->set(DatabaseInterface::class, function () {
+        $database_file = sprintf('%s/%s', __DIR__ . '/..', env('DB_SQLITE'));
+        return SQLiteDatabase::connect($database_file);
+    });
 
     $container->set(SessionInterface::class, fn() => new MyBlog\Core\Session\PhpSession());
 
