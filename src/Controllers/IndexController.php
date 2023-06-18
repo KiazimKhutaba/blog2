@@ -11,6 +11,7 @@ use MyBlog\Middlewares\IsAdmin;
 use MyBlog\Repositories\PostRepository;
 use MyBlog\ViewModels\IndexView;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class IndexController extends BaseController
 {
@@ -66,8 +67,20 @@ class IndexController extends BaseController
 
 
     #[Route('/search', ['GET'], 'main.search')]
-    public function search(Request $request)
+    public function search(Request $request): string
     {
-        throw  new Exception($request->query->get('q', 'none'));
+        $posts_per_page = 5;
+        $current_page = intval($request->query->get('page', 1));
+
+        // Todo: refactor negative and zero values for page var
+        $offset = $current_page === 1 ? 0 : $posts_per_page * ($current_page - 1);
+
+        $search_term = trim($request->query->get('q', ''));
+        $found_posts = $this->postRepository->search($search_term, $offset, $posts_per_page);
+        $total_items = count($found_posts);
+
+        $paginator = new Paginator($total_items, $posts_per_page, $current_page, '&page=(:num)');
+
+        return $this->view->search($found_posts, $paginator);
     }
 }
