@@ -1,6 +1,6 @@
 <?php
 
-use MyBlog\Core\Config;
+
 use MyBlog\Core\Container;
 use MyBlog\Core\Db\DatabaseInterface;
 use MyBlog\Core\Db\SQLiteDatabase;

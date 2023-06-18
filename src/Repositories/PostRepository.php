@@ -4,9 +4,7 @@ namespace MyBlog\Repositories;
 
 use MyBlog\Core\Db\DatabaseInterface;
 use MyBlog\Core\Utils;
-use MyBlog\Dtos\NewCommentRequestDto;
 use MyBlog\Dtos\PostRequestDto;
-use MyBlog\Models\Comment;
 use MyBlog\Models\Post;
 use function MyBlog\Helpers\debug;
 
@@ -29,16 +27,9 @@ class PostRepository extends BaseRepository
         return $this->db->update($id, $post->toArray(), 'posts');
     }
 
-
     public function getPosts(int $limit, int $offset = 0): array|bool
     {
-        $convertor = static function (array $post) {
-            $post['title'] = sprintf('#%d %s', $post['id'], $post['title']);
-            $post['created_at'] = Utils::formatDatetime($post['created_at']);
-            $post['content'] = substr($post['content'], 0, 100);
-            $post['vc'] = $post['vc'] ?: 0;
-            return $post;
-        };
+        $convertor = $this->postConvertor(...);
 
         $sql = 'SELECT posts.*, sc.views_count as vc
                 FROM posts 
@@ -50,6 +41,25 @@ class PostRepository extends BaseRepository
         return $this->db->queryMany($sql, [':offset' => $offset, ':limit' => $limit], $convertor);
     }
 
+
+    public function search(string $search_term, int $offset = 0, int $limit = 10): array
+    {
+        $sql = 'SELECT posts.*, sc.views_count as vc
+                FROM posts 
+                LEFT JOIN stat_counter sc on posts.id = sc.post_id
+                WHERE title LIKE :search_term OR content LIKE :search_term 
+                ORDER BY created_at DESC LIMIT :offset, :limit';
+
+        $rows = $this->db->queryMany($sql, [
+            ':search_term' => "%$search_term%",
+            ':offset' => $offset,
+            ':limit' => $limit
+        ], $this->postConvertor(...));
+
+        if(!$rows) return [];
+
+        return $rows;
+    }
 
     public function getUserPosts(int $user_id): array
     {
@@ -77,5 +87,19 @@ class PostRepository extends BaseRepository
                 where length(posts.title) > 0";
 
         return $this->db->query($sql, []);
+    }
+
+
+
+    private function postConvertor(array $post): array
+    {
+        $_post = [];
+
+        $_post['id'] = $post['id'];
+        $_post['title'] = sprintf('#%d %s', $post['id'], $post['title']);
+        $_post['created_at'] = Utils::formatDatetime($post['created_at']);
+        $_post['content'] = substr($post['content'], 0, 100);
+        $_post['vc'] = $post['vc'] ?? 0;
+        return $_post;
     }
 }
