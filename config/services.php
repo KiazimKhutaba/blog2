@@ -20,7 +20,7 @@ return function (Container $container): Container {
 
     // Database
     $container->set(DatabaseInterface::class, function () {
-        $database_file = sprintf('%s/%s', __DIR__ . '/..', env('DB_SQLITE'));
+        $database_file = sprintf('%s/../%s', __DIR__, env('DB_SQLITE'));
         return SQLiteDatabase::connect($database_file);
     });
 
